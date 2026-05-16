@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ℭ-oas Terminal</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at center, #020202, #000000);
+  color: #e6e6e6;
+  overflow-x: hidden;
+}
+
+/* scanlines */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.015),
+    rgba(255,255,255,0.015) 1px,
+    transparent 2px,
+    transparent 5px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* ================= INTRO ================= */
+.intro {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  z-index: 2000;
+  cursor: pointer;
+}
+
+.intro h1 {
+  font-size: 32px;
+  margin: 0;
+  background: linear-gradient(90deg, #666, #aaa, #666);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.intro p {
+  color: #555;
+  margin-top: 10px;
+}
+
+.intro.hide {
+  opacity: 0;
+  visibility: hidden;
+  transition: 1s ease;
+}
+
+/* ================= TITLE ================= */
+.title {
+  text-align: center;
+  font-size: 34px;
+  margin-top: 30px;
+  background: linear-gradient(90deg, #555, #aaa, #555);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ================= GRID ================= */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 40px;
+}
+
+/* ================= CARDS ================= */
+.card {
+  background: #070707;
+  border: 1px solid #111;
+  border-radius: 18px;
+  height: 260px;
+  position: relative;
+  overflow: hidden;
+
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(6px);
+
+  transition: 0.6s ease, transform 0.25s ease;
+  cursor: pointer;
+}
+
+.card.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.card.unlocked::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.05), transparent);
+  animation: scan 0.8s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* animations */
+@keyframes scan {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* banner */
+.banner {
+  height: 90px;
+  background: url('https://i.pinimg.com/originals/13/56/e5/1356e5ff229a2270742a7b83cac46e83.gif');
+  background-size: cover;
+  filter: brightness(0.4);
+}
+
+/* avatar */
+.avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50px;
+  left: 20px;
+  background-size: cover;
+  border: 1px solid #111;
+}
+
+/* content */
+.content {
+  padding: 50px 20px 20px;
+}
+
+.name { font-size: 18px; font-weight: bold; color: #ddd; }
+.role { font-size: 12px; color: #666; }
+.desc { font-size: 12px; color: #888; margin-top: 10px; }
+
+/* ================= MODAL ================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: #0b0b0b;
+  border: 1px solid #1a1a1a;
+  padding: 25px;
+  border-radius: 15px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  background-size: cover;
+  border: 1px solid #222;
+}
+
+.modal-close {
+  position: absolute;
+  margin-left: 240px;
+  cursor: pointer;
+  color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div class="intro" id="intro">
+  <div>
+    <h1>Welcome to the ℭ-oas Roaster</h1>
+    <p>click to view</p>
+  </div>
+</div>
+
+<h1 class="title">The ℭ-oas Roaster</h1>
+
+<div class="grid">
+
+  <div class="card"><div class="banner"></div><div class="avatar" style="background-image:url('https://i.pinimg.com/736x/a1/c7/f3/a1c7f362ccaea066ff4c6317b9c87a6c.jpg');"></div><div class="content"><div class="name">LeFort</div><div class="role">Founder</div><div class="desc">Humans are the root of all evil</div></div></div>
+
+  <div class="card"><div class="banner"></div><div class="avatar" style="background-image:url('https://i.pinimg.com/736x/d2/f2/a5/d2f2a543b6ce395e98a572b5f04203bb.jpg');"></div><div class="content"><div class="name">Glock</div><div class="role">Co-owner</div><div class="desc">My heart is tied to the ones I love</div></div></div>
+
+  <div class="card"><div class="banner"></div><div class="avatar" style="background-image:url('https://i.pinimg.com/736x/70/68/11/7068114b8281581b056be24ba036327a.jpg');"></div><div class="content"><div class="name">Valentine</div><div class="role">CEO</div><div class="desc">Happy to be here</div></div></div>
+
+  <div class="card"><div class="banner"></div><div class="avatar" style="background-image:url('https://i.pinimg.com/736x/7b/ca/39/7bca3956e4a3aef125ce6f2879221e00.jpg');"></div><div class="content"><div class="name">Cold</div><div class="role">Co-founder</div><div class="desc">Probably busy ruining things</div></div></div>
+
+  <div class="card"><div class="banner"></div><div class="avatar" style="background-image:url('https://i.pinimg.com/736x/88/48/26/884826220dc643e521f681d20fe99f97.jpg');"></div><div class="content"><div class="name">Coach</div><div class="role">Member</div><div class="desc">Peace over noise</div></div></div>
+
+  <div class="card"><div class="banner"></div><div class="avatar" style="background-image:url('https://i.pinimg.com/736x/a5/69/32/a56932b3ef946ce0b58e3b0b88803419.jpg');"></div><div class="content"><div class="name">Realm</div><div class="role">Member</div><div class="desc">Fear through your soul</div></div></div>
+
+  <div class="card"><div class="banner"></div><div class="avatar" style="background-image:url('https://i.pinimg.com/736x/a3/31/ea/a331ea2144917ac2af3ab73708b6e514.jpg');"></div><div class="content"><div class="name">Bladed</div><div class="role">Member</div><div class="desc">Sharp ideas cut through noise</div></div></div>
+
+  <div class="card"><div class="banner"></div><div class="avatar" style="background-image:url('https://i.pinimg.com/736x/bf/b2/ab/bfb2ab3d057d07ddb59005c10bd58982.jpg');"></div><div class="content"><div class="name">Silent</div><div class="role">Member</div><div class="desc">Everything comes back around</div></div></div>
+
+  <div class="card"><div class="banner"></div><div class="avatar" style="background-image:url('https://i.pinimg.com/736x/37/ea/92/37ea92d87a2001d1bdb04e0cc9fdac67.jpg');"></div><div class="content"><div class="name">Beamed</div><div class="role">Member</div><div class="desc">Calm in the chaos</div></div></div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <div class="modal-close" id="close">✕</div>
+    <div class="modal-avatar" id="mAvatar"></div>
+    <h2 id="mName"></h2>
+    <p id="mRole"></p>
+    <p id="mDesc"></p>
+  </div>
+</div>
+
+<script>
+const intro = document.getElementById("intro");
+const cards = document.querySelectorAll(".card");
+
+const modal = document.getElementById("modal");
+const mName = document.getElementById("mName");
+const mRole = document.getElementById("mRole");
+const mDesc = document.getElementById("mDesc");
+const mAvatar = document.getElementById("mAvatar");
+const close = document.getElementById("close");
+
+/* INTRO */
+intro.addEventListener("click",()=>{
+  intro.classList.add("hide");
+
+  cards.forEach((c,i)=>{
+    setTimeout(()=>{
+      c.classList.add("revealed");
+      setTimeout(()=>c.classList.add("unlocked"),400);
+    },i*150);
+  });
+
+  setTimeout(()=>intro.remove(),1000);
+});
+
+/* OPEN CARD */
+cards.forEach(card=>{
+  card.addEventListener("click",()=>{
+    mName.innerText = card.querySelector(".name").innerText;
+    mRole.innerText = card.querySelector(".role").innerText;
+    mDesc.innerText = card.querySelector(".desc").innerText;
+    mAvatar.style.backgroundImage = card.querySelector(".avatar").style.backgroundImage;
+
+    modal.classList.add("show");
+  });
+});
+
+/* CLOSE */
+close.addEventListener("click",()=>{
+  modal.classList.remove("show");
+});
+
+modal.addEventListener("click",(e)=>{
+  if(e.target === modal){
+    modal.classList.remove("show");
+  }
+});
+</script>
+
+</body>
+</html>
