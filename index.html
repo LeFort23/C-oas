@@ -18,6 +18,7 @@ body {
   color: #ddd;
   overflow-x: hidden;
   position: relative;
+  perspective: 1000px;
 }
 
 /* Gothic scanlines + subtle mist */
@@ -147,26 +148,20 @@ body::after {
   box-shadow: 
     0 15px 35px rgba(0,0,0,0.7),
     inset 0 1px 0 rgba(255,255,255,0.05);
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
-.card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(220,200,255,0.3), 
-    transparent
-  );
-  animation: gothicSweep 4s linear infinite;
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
 }
 
-@keyframes gothicSweep {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
 }
 
 .card.revealed {
@@ -182,12 +177,43 @@ body::after {
     inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
-.card:hover {
-  transform: translateY(-12px);
+.card:hover:not(.flipped) {
+  transform: translateY(-12px) rotateX(5deg) rotateY(5deg);
   border-color: rgba(220,200,255,0.6);
   box-shadow: 
     0 30px 60px rgba(0,0,0,0.9),
     0 0 40px rgba(220,200,255,0.2);
+}
+
+/* Front face */
+.card-front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(220,200,255,0.3), 
+    transparent
+  );
+  animation: gothicSweep 4s linear infinite;
+  z-index: 2;
+}
+
+@keyframes gothicSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 /* banner */
@@ -226,9 +252,10 @@ body::after {
     inset 0 0 15px rgba(0,0,0,0.8),
     0 0 15px rgba(220,200,255,0.2);
   transition: all 0.4s ease;
+  z-index: 3;
 }
 
-.card:hover .avatar {
+.card:not(.flipped):hover .avatar {
   border-color: rgba(220,200,255,0.5);
   box-shadow: 
     inset 0 0 20px rgba(0,0,0,1),
@@ -239,6 +266,8 @@ body::after {
 /* content */
 .content {
   padding: 58px 28px 28px;
+  position: relative;
+  z-index: 2;
 }
 
 .name {
@@ -268,6 +297,86 @@ body::after {
   font-style: italic;
   position: relative;
   font-family: 'IM Fell English', serif;
+}
+
+/* Back face */
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: linear-gradient(160deg, #1a1a1a, #0f0f0f);
+  transform: rotateY(180deg);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 30px;
+  text-align: center;
+  border: 1px solid rgba(220,200,255,0.2);
+}
+
+.card-back::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(45deg, 
+    rgba(220,200,255,0.1), 
+    rgba(150,100,200,0.1), 
+    rgba(220,200,255,0.1)
+  );
+  border-radius: 14px;
+  z-index: -1;
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.back-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid rgba(220,200,255,0.4);
+  box-shadow: 
+    inset 0 0 20px rgba(0,0,0,0.9),
+    0 0 25px rgba(220,200,255,0.3);
+}
+
+.back-name {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 500;
+  font-family: 'Cinzel', serif;
+  margin: 0 0 10px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px rgba(220,200,255,0.4);
+}
+
+.back-role {
+  color: #ccc;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 15px;
+  font-family: 'IM Fell English', serif;
+}
+
+.back-desc {
+  color: #bbb;
+  font-size: 15px;
+  line-height: 1.6;
+  font-family: 'IM Fell English', serif;
+  opacity: 0.9;
 }
 
 /* ================= MODAL ================= */
@@ -326,11 +435,6 @@ body::after {
   border-radius: 18px;
   z-index: -1;
   animation: borderGlow 3s ease-in-out infinite;
-}
-
-@keyframes borderGlow {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
 }
 
 .modal-avatar {
@@ -404,93 +508,183 @@ body::after {
 <h1 class="title">The Coven</h1>
 
 <div class="grid">
-  <div class="card">
-    <div class="banner"></div>
-    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/ad/0c/77/ad0c77384faba41c5432db58ff538311.jpg');"></div>
-    <div class="content">
-      <div class="name">Profanity | Oppressionist</div>
-      <div class="role">Founder</div>
-      <div class="desc">Humans are the root of all evil</div>
+  <div class="card" data-name="Profanity | Oppressionist" data-role="Founder" data-desc="Humans are the root of all evil" data-avatar="https://i.pinimg.com/736x/ad/0c/77/ad0c77384faba41c5432db58ff538311.jpg">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="banner"></div>
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="name">Profanity | Oppressionist</div>
+          <div class="role">Founder</div>
+          <div class="desc">Humans are the root of all evil</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="back-avatar"></div>
+        <div class="back-name">Profanity | Oppressionist</div>
+        <div class="back-role">Founder</div>
+        <div class="back-desc">Humans are the root of all evil</div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="banner"></div>
-    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/d2/f2/a5/d2f2a543b6ce395e98a572b5f04203bb.jpg');"></div>
-    <div class="content">
-      <div class="name">Glock</div>
-      <div class="role">Co-owner</div>
-      <div class="desc">My heart is tied to the ones I love</div>
+  <div class="card" data-name="Glock" data-role="Co-owner" data-desc="My heart is tied to the ones I love" data-avatar="https://i.pinimg.com/736x/d2/f2/a5/d2f2a543b6ce395e98a572b5f04203bb.jpg">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="banner"></div>
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="name">Glock</div>
+          <div class="role">Co-owner</div>
+          <div class="desc">My heart is tied to the ones I love</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="back-avatar"></div>
+        <div class="back-name">Glock</div>
+        <div class="back-role">Co-owner</div>
+        <div class="back-desc">My heart is tied to the ones I love</div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="banner"></div>
-    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/70/68/11/7068114b8281581b056be24ba036327a.jpg');"></div>
-    <div class="content">
-      <div class="name">Valentine</div>
-      <div class="role">CEO</div>
-      <div class="desc">Happy to be here</div>
+  <div class="card" data-name="Valentine" data-role="CEO" data-desc="Happy to be here" data-avatar="https://i.pinimg.com/736x/70/68/11/7068114b8281581b056be24ba036327a.jpg">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="banner"></div>
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="name">Valentine</div>
+          <div class="role">CEO</div>
+          <div class="desc">Happy to be here</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="back-avatar"></div>
+        <div class="back-name">Valentine</div>
+        <div class="back-role">CEO</div>
+        <div class="back-desc">Happy to be here</div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="banner"></div>
-    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/7b/ca/39/7bca3956e4a3aef125ce6f2879221e00.jpg');"></div>
-    <div class="content">
-      <div class="name">Cold</div>
-      <div class="role">Co-founder</div>
-      <div class="desc">Probably busy ruining things</div>
+  <div class="card" data-name="Cold" data-role="Co-founder" data-desc="Probably busy ruining things" data-avatar="https://i.pinimg.com/736x/7b/ca/39/7bca3956e4a3aef125ce6f2879221e00.jpg">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="banner"></div>
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="name">Cold</div>
+          <div class="role">Co-founder</div>
+          <div class="desc">Probably busy ruining things</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="back-avatar"></div>
+        <div class="back-name">Cold</div>
+        <div class="back-role">Co-founder</div>
+        <div class="back-desc">Probably busy ruining things</div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="banner"></div>
-    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/88/48/26/884826220dc643e521f681d20fe99f97.jpg');"></div>
-    <div class="content">
-      <div class="name">Coach</div>
-      <div class="role">Member</div>
-      <div class="desc">Peace over noise</div>
+  <div class="card" data-name="Coach" data-role="Member" data-desc="Peace over noise" data-avatar="https://i.pinimg.com/736x/88/48/26/884826220dc643e521f681d20fe99f97.jpg">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="banner"></div>
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="name">Coach</div>
+          <div class="role">Member</div>
+          <div class="desc">Peace over noise</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="back-avatar"></div>
+        <div class="back-name">Coach</div>
+        <div class="back-role">Member</div>
+        <div class="back-desc">Peace over noise</div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="banner"></div>
-    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/a5/69/32/a56932b3ef946ce0b58e3b0b88803419.jpg');"></div>
-    <div class="content">
-      <div class="name">Realm</div>
-      <div class="role">Member</div>
-      <div class="desc">Fear through your soul</div>
+  <div class="card" data-name="Realm" data-role="Member" data-desc="Fear through your soul" data-avatar="https://i.pinimg.com/736x/a5/69/32/a56932b3ef946ce0b58e3b0b88803419.jpg">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="banner"></div>
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="name">Realm</div>
+          <div class="role">Member</div>
+          <div class="desc">Fear through your soul</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="back-avatar"></div>
+        <div class="back-name">Realm</div>
+        <div class="back-role">Member</div>
+        <div class="back-desc">Fear through your soul</div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="banner"></div>
-    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/a3/31/ea/a331ea2144917ac2af3ab73708b6e514.jpg');"></div>
-    <div class="content">
-      <div class="name">Bladed</div>
-      <div class="role">Member</div>
-      <div class="desc">Sharp ideas cut through noise</div>
+  <div class="card" data-name="Bladed" data-role="Member" data-desc="Sharp ideas cut through noise" data-avatar="https://i.pinimg.com/736x/a3/31/ea/a331ea2144917ac2af3ab73708b6e514.jpg">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="banner"></div>
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="name">Bladed</div>
+          <div class="role">Member</div>
+          <div class="desc">Sharp ideas cut through noise</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="back-avatar"></div>
+        <div class="back-name">Bladed</div>
+        <div class="back-role">Member</div>
+        <div class="back-desc">Sharp ideas cut through noise</div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="banner"></div>
-    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/bf/b2/ab/bfb2ab3d057d07ddb59005c10bd58982.jpg');"></div>
-    <div class="content">
-      <div class="name">Silent</div>
-      <div class="role">Member</div>
-      <div class="desc">Everything comes back around</div>
+  <div class="card" data-name="Silent" data-role="Member" data-desc="Everything comes back around" data-avatar="https://i.pinimg.com/736x/bf/b2/ab/bfb2ab3d057d07ddb59005c10bd58982.jpg">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="banner"></div>
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="name">Silent</div>
+          <div class="role">Member</div>
+          <div class="desc">Everything comes back around</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="back-avatar"></div>
+        <div class="back-name">Silent</div>
+        <div class="back-role">Member</div>
+        <div class="back-desc">Everything comes back around</div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="banner"></div>
-    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/37/ea/92/37ea92d87a2001d1bdb04e0cc9fdac67.jpg');"></div>
-    <div class="content">
-      <div class="name">Beamed</div>
-      <div class="role">Member</div>
-      <div class="desc">Calm in the chaos</div>
+  <div class="card" data-name="Beamed" data-role="Member" data-desc="Calm in the chaos" data-avatar="https://i.pinimg.com/736x/37/ea/92/37ea92d87a2001d1bdb04e0cc9fdac67.jpg">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="banner"></div>
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="name">Beamed</div>
+          <div class="role">Member</div>
+          <div class="desc">Calm in the chaos</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="back-avatar"></div>
+        <div class="back-name">Beamed</div>
+        <div class="back-role">Member</div>
+        <div class="back-desc">Calm in the chaos</div>
+      </div>
     </div>
   </div>
 </div>
@@ -529,16 +723,38 @@ intro.addEventListener("click", () => {
   setTimeout(() => intro.remove(), 1200);
 });
 
+// 3D Card Flip Functionality
 cards.forEach(card => {
-  card.addEventListener("click", () => {
-    mName.innerText = card.querySelector(".name").innerText;
-    mRole.innerText = card.querySelector(".role").innerText;
-    mDesc.innerText = card.querySelector(".desc").innerText;
-    mAvatar.style.backgroundImage = card.querySelector(".avatar").style.backgroundImage;
-    modal.classList.add("show");
+  const frontAvatar = card.querySelector('.avatar');
+  const backAvatar = card.querySelector('.back-avatar');
+  
+  // Set avatar images
+  const avatarUrl = card.dataset.avatar;
+  frontAvatar.style.backgroundImage = `url('${avatarUrl}')`;
+  backAvatar.style.backgroundImage = `url('${avatarUrl}')`;
+
+  card.addEventListener("click", (e) => {
+    e.stopPropagation();
+    
+    if (!card.classList.contains('flipped')) {
+      // Flip to back
+      card.classList.add('flipped');
+    } else {
+      // Flip back to front and open modal after flip
+      card.classList.remove('flipped');
+      setTimeout(() => {
+        // Open modal with card data
+        mName.innerText = card.dataset.name;
+        mRole.innerText = card.dataset.role;
+        mDesc.innerText = card.dataset.desc;
+        mAvatar.style.backgroundImage = `url('${avatarUrl}')`;
+        modal.classList.add("show");
+      }, 400); // Wait for flip back animation to complete
+    }
   });
 });
 
+// Modal controls
 close.addEventListener("click", () => {
   modal.classList.remove("show");
 });
@@ -546,6 +762,17 @@ close.addEventListener("click", () => {
 modal.addEventListener("click", (e) => {
   if (e.target === modal) {
     modal.classList.remove("show");
+  }
+});
+
+// Flip cards back when modal opens (optional enhancement)
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.modal')) {
+    cards.forEach(card => {
+      if (card.classList.contains('flipped')) {
+        card.classList.remove('flipped');
+      }
+    });
   }
 });
 </script>
