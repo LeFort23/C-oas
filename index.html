@@ -30,65 +30,108 @@ body::before {
 }
 
 /* ================= BOOT SCREEN ================= */
-.boot{
-  position:fixed;
-  inset:0;
-  background:#000;
-  z-index:5000;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-}
+<script>
+const intro = document.getElementById("intro");
+const cards = document.querySelectorAll(".card");
 
-.boot::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.03),
-    rgba(255,255,255,0.03) 1px,
-    transparent 2px,
-    transparent 4px
-  );
-  pointer-events:none;
-}
+const modal = document.getElementById("modal");
+const mName = document.getElementById("mName");
+const mRole = document.getElementById("mRole");
+const mDesc = document.getElementById("mDesc");
+const mAvatar = document.getElementById("mAvatar");
+const close = document.getElementById("close");
 
-.boot-text{
-  font-family: monospace;
-  font-size:14px;
-  color:#8a8a8a;
-  white-space:pre-line;
-  width:400px;
-  line-height:1.7;
-  text-shadow:0 0 8px rgba(255,255,255,0.15);
-}
+/* ================= BOOT (STRICT 5 SECONDS) ================= */
 
-.loading-bar{
-  width:100%;
-  height:4px;
-  background:#111;
-  margin-top:15px;
-  overflow:hidden;
-  border-radius:5px;
-}
+const boot = document.getElementById("boot");
+const bootText = document.getElementById("bootText");
 
-.loading-fill{
-  height:100%;
-  width:0%;
-  background:#888;
-  animation:loadBar 5s linear forwards;
-}
+const lines = [
+  "[ SYSTEM ] Initializing ℭ-oas...",
+  "[ SYSTEM ] Connecting to archive...",
+  "[ SYSTEM ] Verifying members...",
+  "[ WARNING ] Unauthorized access prohibited",
+  "[ SYSTEM ] Loading interface...",
+  "[ OK ] Access granted."
+];
 
-@keyframes loadBar{
-  from{
-    width:0%;
+const TOTAL_TIME = 5000; // EXACT BOOT TIME
+const lineTime = TOTAL_TIME / lines.length;
+
+let i = 0;
+
+function typeLine() {
+  if (i < lines.length) {
+    bootText.innerHTML += lines[i] + "\n";
+    i++;
+    setTimeout(typeLine, lineTime);
+  } else {
+
+    // show loading bar instantly at end
+    bootText.innerHTML += `
+      <div class="loading-bar">
+        <div class="loading-fill"></div>
+      </div>
+    `;
+
+    // match remaining time so TOTAL = 5 seconds
+    const remaining = TOTAL_TIME - (lines.length * lineTime);
+
+    setTimeout(() => {
+      boot.style.transition = "1s ease";
+      boot.style.opacity = "0";
+
+      setTimeout(() => {
+        boot.remove();
+        intro.style.opacity = "1";
+      }, 1000);
+
+    }, Math.max(remaining, 800));
   }
-  to{
-    width:100%;
-  }
 }
+
+typeLine();
+
+/* ================= INTRO ================= */
+
+intro.addEventListener("click", () => {
+  intro.classList.add("hide");
+
+  cards.forEach((c, i) => {
+    setTimeout(() => {
+      c.classList.add("revealed");
+      setTimeout(() => c.classList.add("unlocked"), 400);
+    }, i * 150);
+  });
+
+  setTimeout(() => intro.remove(), 1000);
+});
+
+/* ================= MODAL ================= */
+
+cards.forEach(card => {
+  card.addEventListener("click", () => {
+    mName.innerText = card.querySelector(".name").innerText;
+    mRole.innerText = card.querySelector(".role").innerText;
+    mDesc.innerText = card.querySelector(".desc").innerText;
+
+    mAvatar.style.backgroundImage =
+      card.querySelector(".avatar").style.backgroundImage;
+
+    modal.classList.add("show");
+  });
+});
+
+close.addEventListener("click", () => {
+  modal.classList.remove("show");
+});
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.classList.remove("show");
+  }
+});
+</script>
 
 /* ================= INTRO ================= */
 .intro {
