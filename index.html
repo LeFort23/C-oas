@@ -739,11 +739,30 @@
       setTimeout(() => intro.remove(), 1500);
     });
 
-    // Mute toggle
-    muteBtn.addEventListener("click", () => {
-      bgMusic.muted = !bgMusic.muted;
-      muteBtn.textContent = bgMusic.muted ? "🔇" : "🔊";
-    });
+  intro.addEventListener('click', () => {
+  bgMusic.volume = 0.5;
+  bgMusic.play().catch(() => {});
+  muteBtn.style.display = 'flex';
+  document.body.classList.add('glitch');
+  setTimeout(() => document.body.classList.remove('glitch'), 1000);
+  intro.classList.add('hide');
+  cards.forEach((card, i) => {
+    setTimeout(() => {
+      card.classList.add('revealed');
+      setTimeout(() => card.classList.add('unlocked'), 600);
+    }, i * 200);
+  });
+  setTimeout(() => intro.remove(), 1500);
+});
+
+muteBtn.addEventListener('click', () => {
+  bgMusic.muted = !bgMusic.muted;
+  if (bgMusic.muted) {
+    muteIcon.src = "mute84.PNG";
+  } else {
+    muteIcon.src = "sound_effect.PNG";
+  }
+});
 
     // Card click — open modal
     cards.forEach(card => {
