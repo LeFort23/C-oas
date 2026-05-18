@@ -5,7 +5,7 @@
 <title>ℭ-oas Terminal</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Courier+Prime:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 * {
   box-sizing: border-box;
@@ -13,45 +13,34 @@
 
 body {
   margin: 0;
-  font-family: 'Courier Prime', monospace;
-  background: #0a000d;
-  color: #b896ff;
+  font-family: 'IBM Plex Mono', monospace;
+  background: #000;
+  color: #ccc;
   overflow-x: hidden;
-  position: relative;
 }
 
-/* Creepy scanlines + blood drip effect */
+/* Minimal scanlines */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: 
-    repeating-linear-gradient(
-      to bottom,
-      rgba(184,150,255,0.02) 0px,
-      rgba(184,150,255,0.02) 1px,
-      transparent 2px,
-      transparent 6px
-    ),
-    radial-gradient(ellipse at 30% 10%, rgba(200,50,50,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse at 70% 90%, rgba(100,20,20,0.08) 0%, transparent 60%);
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.01) 0px,
+    rgba(255,255,255,0.01) 1px,
+    transparent 2px,
+    transparent 6px
+  );
   pointer-events: none;
   z-index: 999;
-  animation: bloodFlicker 3s infinite;
 }
 
-@keyframes bloodFlicker {
-  0%, 90% { opacity: 0.8; }
-  95% { opacity: 1; }
-  100% { opacity: 0.6; }
-}
-
-/* Heavy vignette */
+/* Subtle vignette */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.95) 90%);
+  background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,1) 100%);
   pointer-events: none;
   z-index: 998;
 }
@@ -60,7 +49,7 @@ body::after {
 .intro {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 40% 20%, #1a0000 0%, #0a000d 70%);
+  background: #000;
   display: grid;
   place-items: center;
   text-align: center;
@@ -69,182 +58,89 @@ body::after {
 }
 
 .intro h1 {
-  font-size: 52px;
-  font-weight: 700;
-  font-family: 'Cinzel', serif;
+  font-size: 48px;
+  font-weight: 600;
   margin: 0;
-  color: #b896ff;
-  text-shadow: 
-    0 0 10px #b896ff,
-    0 0 20px #8a00ff,
-    2px 2px 4px rgba(0,0,0,0.8),
-    -2px -2px 4px rgba(184,150,255,0.3);
-  letter-spacing: 8px;
-  animation: creepyType 0.1s steps(20) infinite, bloodDrip 4s ease-in-out infinite;
-  position: relative;
+  color: #fff;
+  letter-spacing: 4px;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+  animation: fadePulse 3s infinite;
 }
 
-@keyframes creepyType {
-  0%, 100% { 
-    text-shadow: 0 0 10px #b896ff, 0 0 20px #8a00ff;
-  }
-  50% { 
-    text-shadow: 0 0 20px #b896ff, 0 0 40px #8a00ff, 2px 0 0 #ff4444;
-  }
-}
-
-@keyframes bloodDrip {
-  0%, 90% { transform: translateY(0); }
-  95% { transform: translateY(2px); }
-  100% { transform: translateY(4px); }
-}
-
-.intro::after {
-  content: "WARNING: CLASSIFIED PERSONNEL";
-  position: absolute;
-  bottom: 100px;
-  font-size: 14px;
-  color: rgba(184,150,255,0.4);
-  font-family: 'Courier Prime', monospace;
-  letter-spacing: 3px;
-  animation: warningFlicker 2s infinite;
-}
-
-@keyframes warningFlicker {
-  0%, 50% { opacity: 0.4; }
-  51%, 100% { opacity: 0.8; }
+@keyframes fadePulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
 }
 
 .intro p {
-  color: rgba(184,150,255,0.6);
-  margin-top: 30px;
-  font-size: 16px;
-  letter-spacing: 4px;
-  animation: heartbeat 1.5s infinite;
-}
-
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
+  color: #888;
+  margin-top: 20px;
+  font-size: 14px;
+  letter-spacing: 2px;
 }
 
 .intro.hide {
   opacity: 0;
   visibility: hidden;
-  transition: 3s ease;
+  transition: 2s ease;
 }
 
 /* ================= TITLE ================= */
 .title {
   text-align: center;
-  font-size: 44px;
-  font-weight: 700;
-  font-family: 'Cinzel', serif;
-  margin: 60px 0 100px;
-  color: #b896ff;
-  text-shadow: 
-    0 0 15px #b896ff,
-    0 0 30px #8a00ff,
-    3px 3px 6px rgba(0,0,0,1);
-  letter-spacing: 10px;
-  animation: titleBleed 4s ease-in-out infinite;
-}
-
-@keyframes titleBleed {
-  0%, 100% { 
-    color: #b896ff;
-    text-shadow: 0 0 15px #b896ff, 0 0 30px #8a00ff;
-  }
-  50% { 
-    color: #ff6666;
-    text-shadow: 0 0 25px #ff4444, 0 0 50px #cc0000;
-  }
+  font-size: 36px;
+  font-weight: 500;
+  margin: 60px 0 80px;
+  color: #fff;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(255,255,255,0.2);
 }
 
 /* ================= GRID ================= */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
-  padding: 50px;
-  max-width: 1600px;
+  gap: 25px;
+  padding: 40px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 /* ================= CARDS ================= */
 .card {
-  background: linear-gradient(145deg, #120014, #1a001a);
-  border: 1px solid rgba(184,150,255,0.2);
-  border-radius: 0;
-  height: 300px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
+  height: 280px;
   position: relative;
   overflow: hidden;
   opacity: 0;
-  transform: translateY(60px) rotateX(10deg);
-  filter: blur(10px) brightness(0.7);
-  transition: all 1s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transform: translateY(30px);
+  transition: all 0.8s ease;
   cursor: pointer;
-  box-shadow: 
-    inset 0 0 50px rgba(0,0,0,0.9),
-    0 20px 40px rgba(0,0,0,0.8);
-}
-
-.card::before {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, transparent, rgba(184,150,255,0.1), transparent);
-  z-index: 1;
-  animation: creepySweep 3s linear infinite;
-}
-
-@keyframes creepySweep {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 .card.revealed {
   opacity: 1;
-  transform: translateY(0) rotateX(0deg);
-  filter: blur(0) brightness(1);
+  transform: translateY(0);
 }
 
 .card.unlocked {
-  border-color: rgba(184,150,255,0.6);
-  box-shadow: 
-    0 0 40px rgba(184,150,255,0.3),
-    0 0 80px rgba(138,0,255,0.2),
-    inset 0 0 50px rgba(0,0,0,0.9);
-  animation: occultPulse 3s infinite;
-}
-
-@keyframes occultPulse {
-  0%, 100% { 
-    box-shadow: 0 0 40px rgba(184,150,255,0.3), 0 0 80px rgba(138,0,255,0.2);
-  }
-  50% { 
-    box-shadow: 0 0 60px rgba(184,150,255,0.6), 0 0 120px rgba(138,0,255,0.4);
-  }
+  border-color: #555;
+  box-shadow: 0 0 20px rgba(255,255,255,0.1);
 }
 
 .card:hover {
-  transform: translateY(-8px) rotateX(-5deg);
-  filter: brightness(1.2);
-  border-color: #b896ff;
+  transform: translateY(-8px);
+  border-color: #666;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 /* banner */
 .banner {
-  height: 110px;
-  background: linear-gradient(to bottom, 
-    rgba(26,0,26,0.8), 
-    rgba(10,0,13,0.9)
-  );
+  height: 100px;
+  background: #222;
   position: relative;
-  border-bottom: 1px solid rgba(184,150,255,0.1);
 }
 
 .banner::before {
@@ -253,102 +149,60 @@ body::after {
   inset: 0;
   background: url('https://i.pinimg.com/originals/13/56/e5/1356e5ff229a2270742a7b83cac46e83.gif');
   background-size: cover;
-  filter: brightness(0.2) hue-rotate(280deg) saturate(0.5);
+  opacity: 0.3;
   mix-blend-mode: multiply;
 }
 
 /* avatar */
 .avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 75px;
+  height: 75px;
+  border-radius: 6px;
   position: absolute;
-  top: 60px;
-  left: 25px;
+  top: 55px;
+  left: 20px;
   background-size: cover;
-  border: 2px solid rgba(184,150,255,0.4);
-  box-shadow: 
-    0 0 20px rgba(138,0,255,0.4),
-    inset 0 0 15px rgba(0,0,0,0.8);
-  transition: all 0.4s ease;
-  filter: grayscale(0.3) contrast(1.2);
+  border: 1px solid #444;
+  transition: all 0.3s ease;
 }
 
 .card:hover .avatar {
-  border-color: #b896ff;
-  box-shadow: 
-    0 0 40px rgba(184,150,255,0.8),
-    inset 0 0 20px rgba(0,0,0,1);
-  transform: scale(1.15);
-  filter: grayscale(0) contrast(1.4);
+  border-color: #666;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
 }
 
 /* content */
 .content {
-  padding: 60px 30px 30px;
-  position: relative;
-  z-index: 2;
+  padding: 55px 25px 25px;
 }
 
 .name {
-  font-size: 22px;
-  font-weight: 700;
-  color: #b896ff;
-  text-shadow: 0 0 12px rgba(184,150,255,0.6);
-  margin-bottom: 6px;
-  letter-spacing: 2px;
-  position: relative;
-}
-
-.name::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #b896ff, transparent);
-  transition: width 0.5s ease;
-}
-
-.card:hover .name::after {
-  width: 100%;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
 }
 
 .role {
-  font-size: 14px;
-  color: #8a00ff;
+  font-size: 13px;
+  color: #aaa;
   text-transform: uppercase;
-  letter-spacing: 4px;
-  opacity: 0.85;
-  font-family: 'Cinzel', serif;
+  letter-spacing: 2px;
 }
 
 .desc {
-  font-size: 14px;
-  color: #666;
-  margin-top: 15px;
-  line-height: 1.5;
-  font-style: italic;
-  position: relative;
-}
-
-.desc::before {
-  content: '"';
-  color: rgba(184,150,255,0.3);
-}
-
-.desc::after {
-  content: '"';
-  color: rgba(184,150,255,0.3);
+  font-size: 13px;
+  color: #888;
+  margin-top: 12px;
+  line-height: 1.4;
 }
 
 /* ================= MODAL ================= */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(5,0,7,0.98);
-  backdrop-filter: blur(20px);
+  background: rgba(0,0,0,0.9);
   display: none;
   justify-content: center;
   align-items: center;
@@ -357,99 +211,55 @@ body::after {
 
 .modal.show {
   display: flex;
-  animation: modalCreep 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-@keyframes modalCreep {
-  from {
-    opacity: 0;
-    transform: scale(0.7) rotateX(30deg);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) rotateX(0deg);
-  }
 }
 
 .modal-content {
-  background: linear-gradient(145deg, #1a001a, #120014);
-  backdrop-filter: blur(25px);
-  border: 2px solid rgba(184,150,255,0.4);
-  padding: 45px;
-  border-radius: 12px;
-  width: 420px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 35px;
+  border-radius: 10px;
+  width: 380px;
   text-align: center;
-  position: relative;
-  box-shadow: 
-    0 0 80px rgba(138,0,255,0.3),
-    inset 0 0 60px rgba(0,0,0,0.95);
-  animation: modalRitual 5s ease-in-out infinite;
-}
-
-@keyframes modalRitual {
-  0%, 100% { 
-    box-shadow: 0 0 80px rgba(138,0,255,0.3), inset 0 0 60px rgba(0,0,0,0.95);
-  }
-  50% { 
-    box-shadow: 0 0 120px rgba(184,150,255,0.6), inset 0 0 80px rgba(138,0,255,0.1);
-  }
+  box-shadow: 0 0 40px rgba(0,0,0,0.8);
 }
 
 .modal-avatar {
-  width: 130px;
-  height: 130px;
-  border-radius: 12px;
-  margin: 0 auto 25px;
+  width: 110px;
+  height: 110px;
+  border-radius: 8px;
+  margin: 0 auto 20px;
   background-size: cover;
-  border: 3px solid rgba(184,150,255,0.6);
-  box-shadow: 
-    0 0 40px rgba(138,0,255,0.6),
-    inset 0 0 30px rgba(0,0,0,1);
-  transition: all 0.5s ease;
-  filter: grayscale(0.2) contrast(1.3);
-}
-
-.modal-avatar:hover {
-  transform: scale(1.2) rotate(180deg);
-  box-shadow: 
-    0 0 80px rgba(184,150,255,1),
-    inset 0 0 40px rgba(0,0,0,1);
-  filter: grayscale(0) contrast(1.5);
+  border: 1px solid #444;
+  box-shadow: 0 0 15px rgba(255,255,255,0.1);
 }
 
 .modal-close {
   position: absolute;
-  top: 20px;
-  right: 25px;
+  top: 15px;
+  right: 20px;
   cursor: pointer;
-  color: #b896ff;
-  font-size: 28px;
-  font-weight: bold;
-  text-shadow: 0 0 15px rgba(184,150,255,0.8);
-  transition: all 0.4s ease;
+  color: #ccc;
+  font-size: 24px;
+  transition: color 0.3s ease;
 }
 
 .modal-close:hover {
-  color: #ff6666;
-  transform: scale(1.3) rotate(90deg);
-  text-shadow: 0 0 25px rgba(255,102,102,1);
+  color: #fff;
 }
 
 .modal-content h2 {
-  color: #b896ff;
-  font-size: 28px;
-  font-weight: 700;
-  font-family: 'Cinzel', serif;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 500;
   margin: 0 0 15px;
-  text-shadow: 0 0 20px rgba(184,150,255,0.8);
-  letter-spacing: 4px;
+  letter-spacing: 1px;
 }
 
 .modal-content p {
   color: #888;
-  font-size: 16px;
-  margin: 12px 0;
-  line-height: 1.6;
+  font-size: 14px;
+  margin: 10px 0;
+  line-height: 1.5;
 }
 </style>
 </head>
@@ -459,16 +269,14 @@ body::after {
 <!-- INTRO -->
 <div class="intro" id="intro">
   <div>
-    <h1>The ℭ-oas Roster</h1>
-    <p>ENTER IF YOU DARE</p>
+    <h1>ℭ-oas Terminal</h1>
+    <p>click to access</p>
   </div>
 </div>
 
-<h1 class="title">FORBIDDEN ARCHIVE</h1>
+<h1 class="title">PERSONNEL</h1>
 
-<!-- Your existing grid/cards HTML stays exactly the same -->
 <div class="grid">
-  <!-- All 9 cards remain identical -->
   <div class="card">
     <div class="banner"></div>
     <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/ad/0c/77/ad0c77384faba41c5432db58ff538311.jpg');"></div>
@@ -478,13 +286,92 @@ body::after {
       <div class="desc">Humans are the root of all evil</div>
     </div>
   </div>
-  <!-- ... rest of your cards ... -->
+
+  <div class="card">
+    <div class="banner"></div>
+    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/d2/f2/a5/d2f2a543b6ce395e98a572b5f04203bb.jpg');"></div>
+    <div class="content">
+      <div class="name">Glock</div>
+      <div class="role">Co-owner</div>
+      <div class="desc">My heart is tied to the ones I love</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="banner"></div>
+    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/70/68/11/7068114b8281581b056be24ba036327a.jpg');"></div>
+    <div class="content">
+      <div class="name">Valentine</div>
+      <div class="role">CEO</div>
+      <div class="desc">Happy to be here</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="banner"></div>
+    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/7b/ca/39/7bca3956e4a3aef125ce6f2879221e00.jpg');"></div>
+    <div class="content">
+      <div class="name">Cold</div>
+      <div class="role">Co-founder</div>
+      <div class="desc">Probably busy ruining things</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="banner"></div>
+    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/88/48/26/884826220dc643e521f681d20fe99f97.jpg');"></div>
+    <div class="content">
+      <div class="name">Coach</div>
+      <div class="role">Member</div>
+      <div class="desc">Peace over noise</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="banner"></div>
+    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/a5/69/32/a56932b3ef946ce0b58e3b0b88803419.jpg');"></div>
+    <div class="content">
+      <div class="name">Realm</div>
+      <div class="role">Member</div>
+      <div class="desc">Fear through your soul</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="banner"></div>
+    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/a3/31/ea/a331ea2144917ac2af3ab73708b6e514.jpg');"></div>
+    <div class="content">
+      <div class="name">Bladed</div>
+      <div class="role">Member</div>
+      <div class="desc">Sharp ideas cut through noise</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="banner"></div>
+    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/bf/b2/ab/bfb2ab3d057d07ddb59005c10bd58982.jpg');"></div>
+    <div class="content">
+      <div class="name">Silent</div>
+      <div class="role">Member</div>
+      <div class="desc">Everything comes back around</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="banner"></div>
+    <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/37/ea/92/37ea92d87a2001d1bdb04e0cc9fdac67.jpg');"></div>
+    <div class="content">
+      <div class="name">Beamed</div>
+      <div class="role">Member</div>
+      <div class="desc">Calm in the chaos</div>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL (same structure) -->
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
-    <div class="modal-close" id="close">✕</div>
+    <div class="modal-close" id="close">×</div>
     <div class="modal-avatar" id="mAvatar"></div>
     <h2 id="mName"></h2>
     <p id="mRole"></p>
@@ -502,21 +389,19 @@ const mDesc = document.getElementById("mDesc");
 const mAvatar = document.getElementById("mAvatar");
 const close = document.getElementById("close");
 
-/* CREEPY INTRO */
 intro.addEventListener("click", () => {
   intro.classList.add("hide");
 
   cards.forEach((c, i) => {
     setTimeout(() => {
       c.classList.add("revealed");
-      setTimeout(() => c.classList.add("unlocked"), 800);
-    }, i * 250 + 800);
+      setTimeout(() => c.classList.add("unlocked"), 400);
+    }, i * 150);
   });
 
-  setTimeout(() => intro.remove(), 3000);
+  setTimeout(() => intro.remove(), 1000);
 });
 
-/* CARD REVEAL */
 cards.forEach(card => {
   card.addEventListener("click", () => {
     mName.innerText = card.querySelector(".name").innerText;
@@ -524,48 +409,18 @@ cards.forEach(card => {
     mDesc.innerText = card.querySelector(".desc").innerText;
     mAvatar.style.backgroundImage = card.querySelector(".avatar").style.backgroundImage;
     modal.classList.add("show");
-    document.body.style.overflow = "hidden";
   });
 });
 
-/* CLOSE */
 close.addEventListener("click", () => {
   modal.classList.remove("show");
-  document.body.style.overflow = "auto";
 });
 
 modal.addEventListener("click", (e) => {
   if (e.target === modal) {
     modal.classList.remove("show");
-    document.body.style.overflow = "auto";
   }
 });
-
-// Creepy typing effect
-const title = document.querySelector(".title");
-const text = "FORBIDDEN ARCHIVE";
-title.textContent = "";
-let charIndex = 0;
-const typeCreepy = () => {
-  if (charIndex < text.length) {
-    title.textContent += text.charAt(charIndex);
-    charIndex++;
-    setTimeout(typeCreepy, 150 + Math.random() * 100);
-  }
-};
-setTimeout(typeCreepy, 4000);
-
-// Random flickers
-setInterval(() => {
-  cards.forEach(card => {
-    if (Math.random() < 0.1) {
-      card.style.filter = 'brightness(0.5)';
-      setTimeout(() => {
-        card.style.filter = '';
-      }, 200);
-    }
-  });
-}, 3000);
 </script>
 
 </body>
