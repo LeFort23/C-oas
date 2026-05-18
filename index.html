@@ -7,7 +7,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:wght@400;700&family=Cinzel:wght@400;500;700&display=swap');
 
-    /* Reset & Base Styles */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -22,7 +21,6 @@
       position: relative;
     }
 
-    /* Blood Drip Background */
     body::before {
       content: "";
       position: fixed;
@@ -58,7 +56,6 @@
       z-index: 998;
     }
 
-    /* Glitch Effect */
     body.glitch::before {
       animation: glitch 0.3s linear infinite;
     }
@@ -262,7 +259,6 @@
       background: linear-gradient(160deg, #150000, #25000a);
     }
 
-    /* Card Banner */
     .banner {
       height: 110px;
       background: linear-gradient(to bottom, 
@@ -284,7 +280,6 @@
       mix-blend-mode: multiply;
     }
 
-    /* Avatar */
     .avatar {
       width: 85px;
       height: 85px;
@@ -312,7 +307,6 @@
       filter: contrast(1.4) saturate(1);
     }
 
-    /* Card Content */
     .content {
       padding: 60px 30px 30px;
     }
@@ -489,7 +483,31 @@
       text-shadow: 0 0 8px rgba(139,0,0,0.6);
     }
 
-    /* Responsive Design */
+    /* Mute Button */
+    #muteBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 4000;
+      background: #1a0000;
+      border: 1px solid #8b0000;
+      color: #ff4444;
+      font-size: 20px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      box-shadow: 0 0 15px rgba(139,0,0,0.5);
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+    }
+
+    #muteBtn:hover {
+      background: #2a0000;
+      box-shadow: 0 0 25px rgba(139,0,0,0.8);
+      border-color: #ff4444;
+    }
+
+    /* Responsive */
     @media (max-width: 1200px) {
       .grid {
         grid-template-columns: repeat(3, 1fr);
@@ -503,35 +521,27 @@
         gap: 25px;
         padding: 25px;
       }
-      
-      .intro h1 {
-        font-size: 40px;
-        letter-spacing: 5px;
-      }
-      
-      .title {
-        font-size: 32px;
-        margin: 50px 0 70px;
-      }
-      
-      .modal-content {
-        width: 95%;
-        padding: 40px 25px;
-      }
+      .intro h1 { font-size: 40px; letter-spacing: 5px; }
+      .title { font-size: 32px; margin: 50px 0 70px; }
+      .modal-content { width: 95%; padding: 40px 25px; }
     }
 
     @media (max-width: 480px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .intro h1 {
-        font-size: 32px;
-      }
+      .grid { grid-template-columns: 1fr; }
+      .intro h1 { font-size: 32px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Background Music -->
+  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2026/04/01/audio_ccff40b4f0.mp3?filename=atlasaudio-horror-ambience-512255.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Mute Toggle -->
+  <button id="muteBtn" style="display:none;">🔊</button>
+
   <!-- Intro Screen -->
   <div class="intro" id="intro">
     <div>
@@ -657,7 +667,6 @@
   </div>
 
   <script>
-    // DOM Elements
     const intro = document.getElementById("intro");
     const cards = document.querySelectorAll(".card");
     const modal = document.getElementById("modal");
@@ -666,12 +675,21 @@
     const mDesc = document.getElementById("mDesc");
     const mAvatar = document.getElementById("mAvatar");
     const close = document.getElementById("close");
+    const bgMusic = document.getElementById("bgMusic");
+    const muteBtn = document.getElementById("muteBtn");
 
-    // Intro Animation with glitch
+    // Intro click — starts music and reveals cards
     intro.addEventListener("click", () => {
+      // Start music on user interaction
+      bgMusic.volume = 0.5;
+      bgMusic.play().catch(() => {});
+
+      // Show mute button
+      muteBtn.style.display = "block";
+
       document.body.classList.add("glitch");
       setTimeout(() => document.body.classList.remove("glitch"), 1000);
-      
+
       intro.classList.add("hide");
 
       cards.forEach((card, index) => {
@@ -684,12 +702,18 @@
       setTimeout(() => intro.remove(), 1500);
     });
 
-    // Card Click Handler
+    // Mute toggle
+    muteBtn.addEventListener("click", () => {
+      bgMusic.muted = !bgMusic.muted;
+      muteBtn.textContent = bgMusic.muted ? "🔇" : "🔊";
+    });
+
+    // Card click — open modal
     cards.forEach(card => {
       card.addEventListener("click", () => {
         document.body.classList.add("glitch");
         setTimeout(() => document.body.classList.remove("glitch"), 300);
-        
+
         mName.textContent = card.dataset.name || card.querySelector(".name").textContent;
         mRole.textContent = card.dataset.role || card.querySelector(".role").textContent;
         mDesc.textContent = card.dataset.desc || card.querySelector(".desc").textContent;
@@ -698,7 +722,7 @@
       });
     });
 
-    // Modal Close Handlers
+    // Close modal
     close.addEventListener("click", () => {
       document.body.classList.add("glitch");
       setTimeout(() => document.body.classList.remove("glitch"), 200);
@@ -713,7 +737,7 @@
       }
     });
 
-    // Random blood drips
+    // Random glitch flicker
     setInterval(() => {
       if (Math.random() < 0.1) {
         document.body.classList.add("glitch");
