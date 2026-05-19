@@ -465,33 +465,104 @@
     /* ── Mute Button ── */
     #muteBtn {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      bottom: 28px;
+      right: 28px;
       z-index: 4000;
-      background: #0a0a0a;
-      border: 1px solid #222;
+      background: linear-gradient(145deg, #1a0000, #0d0000);
+      border: 1px solid #5a0000;
       cursor: pointer;
-      padding: 8px;
-      width: 58px;
-      height: 58px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      box-shadow: 0 0 12px rgba(0,0,0,0.8);
-      transition: all 0.3s ease;
+      box-shadow:
+        0 0 0 1px #000,
+        0 0 20px rgba(139,0,0,0.5),
+        0 0 40px rgba(139,0,0,0.2),
+        inset 0 1px 0 rgba(255,68,68,0.1);
+      transition: all 0.4s cubic-bezier(0.22, 0.44, 0.38, 0.94);
       display: none;
       align-items: center;
       justify-content: center;
+      padding: 0;
+      outline: none;
+      overflow: hidden;
+    }
+
+    #muteBtn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        rgba(139,0,0,0.15) 25%,
+        transparent 50%,
+        rgba(139,0,0,0.1) 75%,
+        transparent 100%
+      );
+      animation: muteSpin 6s linear infinite;
+    }
+
+    @keyframes muteSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    #muteBtn::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      border: 1px solid rgba(139,0,0,0.3);
+      pointer-events: none;
     }
 
     #muteBtn:hover {
-      background: #181818;
-      border-color: #555;
-      transform: scale(1.08);
+      box-shadow:
+        0 0 0 1px #000,
+        0 0 30px rgba(255,68,68,0.7),
+        0 0 60px rgba(139,0,0,0.4),
+        inset 0 1px 0 rgba(255,68,68,0.2);
+      border-color: #ff4444;
+      transform: scale(1.1);
     }
 
-    #muteIcon {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
+    #muteBtn:active {
+      transform: scale(0.95);
+    }
+
+    #muteBtn svg {
+      position: relative;
+      z-index: 1;
+      width: 26px;
+      height: 26px;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 0 4px rgba(255,68,68,0.6));
+    }
+
+    #muteBtn:hover svg {
+      filter: drop-shadow(0 0 8px rgba(255,68,68,1));
+    }
+
+    /* wave bars that animate when sound is on */
+    .mute-wave {
+      transform-origin: bottom center;
+      animation: waveBar 1.2s ease-in-out infinite;
+    }
+    .mute-wave:nth-child(1) { animation-delay: 0s;    }
+    .mute-wave:nth-child(2) { animation-delay: 0.2s;  }
+    .mute-wave:nth-child(3) { animation-delay: 0.4s;  }
+
+    @keyframes waveBar {
+      0%, 100% { transform: scaleY(0.4); }
+      50%       { transform: scaleY(1);   }
+    }
+
+    #muteBtn.is-muted .mute-wave {
+      animation: none;
+      transform: scaleY(0.4);
+      opacity: 0.4;
     }
 
     /* ── Top Navigation ── */
@@ -562,8 +633,20 @@
     <source src="https://cdn.pixabay.com/download/audio/2026/04/01/audio_ccff40b4f0.mp3?filename=atlasaudio-horror-ambience-512255.mp3" type="audio/mpeg">
   </audio>
 
+  <!-- Mute Button -->
   <button id="muteBtn" aria-label="Toggle sound">
-    <img id="muteIcon" src="sound_effect.PNG" alt="Sound on">
+    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M5 9.5H8.5L13 5.5V20.5L8.5 16.5H5V9.5Z"
+            stroke="#ff4444" stroke-width="1.5" stroke-linejoin="round" fill="rgba(139,0,0,0.15)"/>
+      <g id="soundWaves">
+        <path d="M16 9.5C17.2 10.7 17.2 15.3 16 16.5" stroke="#ff4444" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M18.5 7C20.8 9.3 20.8 16.7 18.5 19" stroke="#ff4444" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+      </g>
+      <g id="muteX" display="none">
+        <line x1="15" y1="10" x2="21" y2="16" stroke="#ff4444" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="21" y1="10" x2="15" y2="16" stroke="#ff4444" stroke-width="1.5" stroke-linecap="round"/>
+      </g>
+    </svg>
   </button>
 
   <!-- Top Navigation -->
@@ -739,7 +822,6 @@
     const closeBtn = document.getElementById('close');
     const bgMusic = document.getElementById('bgMusic');
     const muteBtn = document.getElementById('muteBtn');
-    const muteIcon = document.getElementById('muteIcon');
 
     // ── Intro click: start music and reveal cards ──
     intro.addEventListener('click', () => {
@@ -764,10 +846,22 @@
     });
 
     // ── Mute toggle ──
+    const soundWaves = document.getElementById('soundWaves');
+    const muteX      = document.getElementById('muteX');
+
     muteBtn.addEventListener('click', () => {
       bgMusic.muted = !bgMusic.muted;
-      muteIcon.src = bgMusic.muted ? 'mute84.PNG' : 'sound_effect.PNG';
-      muteIcon.alt = bgMusic.muted ? 'Sound off' : 'Sound on';
+      if (bgMusic.muted) {
+        muteBtn.classList.add('is-muted');
+        muteBtn.setAttribute('aria-label', 'Unmute sound');
+        soundWaves.setAttribute('display', 'none');
+        muteX.setAttribute('display', 'block');
+      } else {
+        muteBtn.classList.remove('is-muted');
+        muteBtn.setAttribute('aria-label', 'Mute sound');
+        soundWaves.setAttribute('display', 'block');
+        muteX.setAttribute('display', 'none');
+      }
     });
 
     // ── Open modal on card click ──
