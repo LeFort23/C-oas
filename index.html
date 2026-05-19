@@ -567,24 +567,36 @@
 
     /* ── Top Navigation ── */
     .topLinks {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
+      justify-content: center;
       gap: 35px;
+      padding-top: 25px;
       z-index: 1500;
     }
 
     .topLinks a {
       font-family: 'Cinzel', serif;
-      font-size: 12px;
-      color: #660000;
+      font-size: 13px;
+      color: #ff4444;
       text-decoration: none;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
       text-transform: uppercase;
       transition: color 0.3s ease, text-shadow 0.3s ease;
       position: relative;
+      text-shadow:
+        0 0 8px #ff4444,
+        0 0 20px #8b0000,
+        0 0 40px #8b0000;
+      animation: linkGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes linkGlow {
+      0%, 100% {
+        text-shadow: 0 0 8px #ff4444, 0 0 20px #8b0000, 0 0 40px #8b0000;
+      }
+      50% {
+        text-shadow: 0 0 12px #ff6666, 0 0 30px #ff4444, 0 0 60px #8b0000;
+      }
     }
 
     .topLinks a::after {
@@ -594,15 +606,19 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: #660000;
+      background: #ff4444;
+      box-shadow: 0 0 6px #ff4444;
       transform: scaleX(0);
       transition: transform 0.3s ease;
       transform-origin: center;
     }
 
     .topLinks a:hover {
-      color: #660000;
-      text-shadow: 0 0 12px rgba(255,255,255,0.15);
+      color: #ff6666;
+      text-shadow:
+        0 0 15px #ff6666,
+        0 0 35px #ff4444,
+        0 0 60px #8b0000;
     }
 
     .topLinks a:hover::after {
