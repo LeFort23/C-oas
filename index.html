@@ -1,947 +1,1272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ℭ-oas</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;500;700&display=swap');
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'IM Fell English', serif;
-      background: #000;
-      color: #b30000;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* Scanline + vignette overlay */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          rgba(139,0,0,0.03) 0px,
-          rgba(139,0,0,0.03) 1px,
-          transparent 2px,
-          transparent 6px
-        ),
-        radial-gradient(ellipse at 20% 80%, rgba(178,34,34,0.04) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 999;
-      animation: bloodPulse 8s ease-in-out infinite;
-    }
-
-    @keyframes bloodPulse {
-      0%, 100% { opacity: 0.7; }
-      50%       { opacity: 1;   }
-    }
-
-    /* Corner vignette */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(139,0,0,0.08) 0%, transparent 40%),
-        radial-gradient(circle at 70% 80%, rgba(178,34,34,0.06) 0%, transparent 50%),
-        radial-gradient(circle at center, transparent 40%, rgba(0,0,0,1) 100%);
-      pointer-events: none;
-      z-index: 998;
-    }
-
-    body.glitch::before {
-      animation: glitch 0.3s linear infinite;
-    }
-
-    @keyframes glitch {
-      0%, 100% { transform: translate(0);          }
-      20%       { transform: translate(-2px,  2px); }
-      40%       { transform: translate(-2px, -2px); }
-      60%       { transform: translate( 2px,  2px); }
-      80%       { transform: translate( 2px, -2px); }
-    }
-
-    /* ── Intro Screen ── */
-    .intro {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle, #1a0000, #000);
-      display: grid;
-      place-items: center;
-      text-align: center;
-      z-index: 2000;
-      cursor: pointer;
-    }
-
-    .intro h1 {
-      font-size: 56px;
-      font-weight: 700;
-      font-family: 'Cinzel', serif;
-      color: #ff4444;
-      letter-spacing: 8px;
-      text-shadow:
-        0 0 20px #8b0000,
-        0 0 40px #b30000,
-        0 0 60px #8b0000,
-        2px 2px 0 #000,
-        -2px -2px 0 #000;
-      border-bottom: 3px solid #8b0000;
-      padding-bottom: 15px;
-      position: relative;
-      animation: bloodDrip 4s ease-in-out infinite;
-    }
-
-    .intro h1::after {
-      content: "";
-      position: absolute;
-      bottom: -10px;
-      left: 0;
-      right: 0;
-      height: 8px;
-      background: linear-gradient(90deg, transparent, #8b0000, transparent);
-      animation: bloodFlow 3s linear infinite;
-    }
-
-    @keyframes bloodDrip {
-      0%, 100% {
-        text-shadow: 0 0 20px #8b0000, 0 0 40px #b30000, 0 0 60px #8b0000;
-        transform: scale(1);
-      }
-      50% {
-        text-shadow: 0 0 30px #ff0000, 0 0 60px #ff4444, 0 0 90px #8b0000;
-        transform: scale(1.02);
-      }
-    }
-
-    @keyframes bloodFlow {
-      0%   { transform: translateX(-100%); }
-      100% { transform: translateX(100%);  }
-    }
-
-    .intro p {
-      color: #660000;
-      margin-top: 30px;
-      font-size: 18px;
-      letter-spacing: 4px;
-      text-shadow: 0 0 10px #8b0000;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; }
-      50%       { opacity: 1;   }
-    }
-
-    .intro.hide {
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 3s ease, visibility 3s ease;
-    }
-
-    /* ── Page Title ── */
-    .title {
-      text-align: center;
-      font-size: 44px;
-      font-weight: 700;
-      font-family: 'Cinzel', serif;
-      margin: 80px 0 100px;
-      color: #ff4444;
-      letter-spacing: 6px;
-      text-shadow:
-        0 0 15px #8b0000,
-        2px 2px 0 #000,
-        -2px -2px 0 #000;
-      position: relative;
-    }
-
-    .title::after {
-      content: "Not Here But Never Gone";
-      position: absolute;
-      bottom: -25px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 14px;
-      color: #660000;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px #8b0000;
-      animation: flicker 3s linear infinite;
-    }
-
-    @keyframes flicker {
-      0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1;   }
-      20%, 24%, 55%                      { opacity: 0.3; }
-    }
-
-    /* ── Card Grid ── */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 35px;
-      padding: 60px;
-      max-width: 1500px;
-      margin: 0 auto;
-    }
-
-    /* ── Card ── */
-    .card {
-      background: linear-gradient(160deg, #0a0000, #1a000a);
-      border: 1px solid rgba(139,0,0,0.4);
-      height: 300px;
-      position: relative;
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(50px) scale(0.95);
-      transition: all 1.2s cubic-bezier(0.22, 0.44, 0.38, 0.94);
-      cursor: pointer;
-      box-shadow:
-        0 20px 40px rgba(139,0,0,0.4),
-        inset 0 1px 0 rgba(139,0,0,0.1);
-    }
-
-    /* Top sweep line */
-    .card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #ff4444, #8b0000, transparent);
-      animation: bloodSweep 3s linear infinite;
-      box-shadow: 0 0 10px #8b0000;
-    }
-
-    @keyframes bloodSweep {
-      0%   { transform: translateX(-100%) scaleX(0.5); }
-      50%  { transform: translateX(0)     scaleX(1.2); }
-      100% { transform: translateX(100%)  scaleX(0.5); }
-    }
-
-    .card.revealed {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    .card.unlocked {
-      border-color: #ff4444;
-      box-shadow:
-        0 30px 60px rgba(139,0,0,0.6),
-        0 0 40px rgba(139,0,0,0.4),
-        inset 0 1px 0 rgba(139,0,0,0.2);
-      animation: unlockPulse 1s ease-out;
-    }
-
-    @keyframes unlockPulse {
-      0%   { box-shadow: 0 30px 60px rgba(139,0,0,0.6), 0 0 40px rgba(139,0,0,0.4); }
-      50%  { box-shadow: 0 30px 60px rgba(255,68,68,0.8), 0 0 60px rgba(139,0,0,0.8); }
-      100% { box-shadow: 0 30px 60px rgba(139,0,0,0.6), 0 0 40px rgba(139,0,0,0.4); }
-    }
-
-    .card:hover {
-      transform: translateY(-15px) scale(1.02);
-      border-color: #ff6666;
-      box-shadow:
-        0 40px 80px rgba(139,0,0,0.8),
-        0 0 60px rgba(139,0,0,0.6),
-        inset 0 2px 10px rgba(139,0,0,0.2);
-      background: linear-gradient(160deg, #150000, #25000a);
-    }
-
-    .banner {
-      height: 110px;
-      background: linear-gradient(to bottom, rgba(10,0,0,0.95), rgba(26,0,10,1));
-      position: relative;
-      border-bottom: 2px solid rgba(139,0,0,0.6);
-    }
-
-    .banner::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: url('https://i.pinimg.com/originals/13/56/e5/1356e5ff229a2270742a7b83cac46e83.gif') center/cover;
-      opacity: 0.15;
-      filter: grayscale(1) sepia(0.8) brightness(0.5) contrast(1.5);
-      mix-blend-mode: multiply;
-    }
-
-    .avatar {
-      width: 85px;
-      height: 85px;
-      border-radius: 4px;
-      position: absolute;
-      top: 60px;
-      left: 25px;
-      background-size: cover;
-      background-position: center;
-      border: 3px solid #8b0000;
-      box-shadow:
-        inset 0 0 20px rgba(0,0,0,0.9),
-        0 0 20px rgba(139,0,0,0.6),
-        2px 2px 0 #000;
-      transition: all 0.5s ease;
-      filter: contrast(1.2) saturate(0.8);
-    }
-
-    .card:hover .avatar {
-      border-color: #ff4444;
-      box-shadow:
-        inset 0 0 25px rgba(0,0,0,1),
-        0 0 35px rgba(139,0,0,0.9),
-        2px 2px 0 #000;
-      transform: scale(1.1) rotate(2deg);
-      filter: contrast(1.4) saturate(1);
-    }
-
-    .content {
-      padding: 60px 30px 30px;
-    }
-
-    .name {
-      font-size: 23px;
-      font-weight: 700;
-      font-family: 'Cinzel', serif;
-      color: #ff4444;
-      margin-bottom: 8px;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px #8b0000, 2px 2px 0 #000;
-    }
-
-    .role {
-      font-size: 13px;
-      color: #990000;
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      opacity: 0.95;
-      text-shadow: 0 0 8px #8b0000;
-      font-weight: 700;
-    }
-
-    .desc {
-      font-size: 14px;
-      color: #660000;
-      margin-top: 16px;
-      line-height: 1.5;
-      font-style: italic;
-      text-shadow: 0 0 5px rgba(139,0,0,0.5);
-    }
-
-    .desc::before {
-      content: "† ";
-      color: #8b0000;
-      text-shadow: 0 0 8px #8b0000;
-      animation: daggerTwitch 4s ease-in-out infinite;
-      display: inline-block;
-    }
-
-    @keyframes daggerTwitch {
-      0%, 90%, 100% { transform: rotate(0deg);  }
-      5%            { transform: rotate(-5deg);  }
-      15%           { transform: rotate(3deg);   }
-      25%           { transform: rotate(-2deg);  }
-    }
-
-    /* ── Modal ── */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.98);
-      backdrop-filter: blur(15px) saturate(0.8);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 3000;
-    }
-
-    .modal.show {
-      display: flex;
-      animation: modalRise 0.8s cubic-bezier(0.22, 0.44, 0.38, 0.94);
-    }
-
-    @keyframes modalRise {
-      from { opacity: 0; transform: translateY(100px) scale(0.8); }
-      to   { opacity: 1; transform: translateY(0)     scale(1);   }
-    }
-
-    .modal-content {
-      background: linear-gradient(160deg, #100000, #200008);
-      border: 2px solid #8b0000;
-      padding: 50px;
-      border-radius: 8px;
-      width: 450px;
-      text-align: center;
-      box-shadow:
-        0 40px 100px rgba(139,0,0,0.7),
-        0 0 80px rgba(139,0,0,0.4),
-        inset 0 2px 10px rgba(139,0,0,0.1);
-      position: relative;
-    }
-
-    .modal-content::before {
-      content: "";
-      position: absolute;
-      inset: -3px;
-      background: linear-gradient(45deg, #ff4444, #8b0000, #660000, #ff4444);
-      border-radius: 10px;
-      z-index: -1;
-      animation: bloodBorder 2s ease-in-out infinite;
-      filter: blur(2px);
-    }
-
-    @keyframes bloodBorder {
-      0%, 100% { opacity: 0.7; transform: rotate(0deg);   }
-      50%       { opacity: 1;   transform: rotate(180deg); }
-    }
-
-    .modal-avatar {
-      width: 140px;
-      height: 140px;
-      border-radius: 6px;
-      margin: 0 auto 30px;
-      background-size: cover;
-      background-position: center;
-      border: 4px solid #8b0000;
-      box-shadow:
-        inset 0 0 30px rgba(0,0,0,1),
-        0 0 40px rgba(139,0,0,0.8);
-      transition: all 0.5s ease;
-      filter: contrast(1.3);
-    }
-
-    .modal-avatar:hover {
-      transform: scale(1.15) rotate(5deg);
-      box-shadow:
-        inset 0 0 35px rgba(0,0,0,1),
-        0 0 60px rgba(139,0,0,1);
-      filter: contrast(1.5) brightness(1.1);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      right: 25px;
-      cursor: pointer;
-      color: #ff4444;
-      font-size: 30px;
-      font-weight: 700;
-      font-family: 'Cinzel', serif;
-      transition: all 0.4s ease;
-      text-shadow: 0 0 15px #8b0000;
-      line-height: 1;
-    }
-
-    .modal-close:hover {
-      color: #ff6666;
-      text-shadow: 0 0 20px #ff4444, 2px 2px 0 #000;
-      transform: scale(1.3) rotate(90deg);
-    }
-
-    .modal-content h2 {
-      color: #ff4444;
-      font-size: 28px;
-      font-weight: 700;
-      font-family: 'Cinzel', serif;
-      margin: 0 0 20px;
-      letter-spacing: 3px;
-      text-shadow: 0 0 15px #8b0000, 2px 2px 0 #000;
-    }
-
-    .modal-content p {
-      color: #990000;
-      font-size: 16px;
-      margin: 15px 0;
-      line-height: 1.7;
-      text-shadow: 0 0 8px rgba(139,0,0,0.6);
-    }
-
-    /* ── Mute Button ── */
-    #muteBtn {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      z-index: 4000;
-      background: linear-gradient(145deg, #1a0000, #0d0000);
-      border: 1px solid #5a0000;
-      cursor: pointer;
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      box-shadow:
-        0 0 0 1px #000,
-        0 0 20px rgba(139,0,0,0.5),
-        0 0 40px rgba(139,0,0,0.2),
-        inset 0 1px 0 rgba(255,68,68,0.1);
-      transition: all 0.4s cubic-bezier(0.22, 0.44, 0.38, 0.94);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      outline: none;
-      overflow: hidden;
-    }
-
-    #muteBtn::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: conic-gradient(
-        from 0deg,
-        transparent 0%,
-        rgba(139,0,0,0.15) 25%,
-        transparent 50%,
-        rgba(139,0,0,0.1) 75%,
-        transparent 100%
-      );
-      animation: muteSpin 6s linear infinite;
-    }
-
-    @keyframes muteSpin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    #muteBtn::after {
-      content: "";
-      position: absolute;
-      inset: 4px;
-      border-radius: 50%;
-      border: 1px solid rgba(139,0,0,0.3);
-      pointer-events: none;
-    }
-
-    #muteBtn:hover {
-      box-shadow:
-        0 0 0 1px #000,
-        0 0 30px rgba(255,68,68,0.7),
-        0 0 60px rgba(139,0,0,0.4),
-        inset 0 1px 0 rgba(255,68,68,0.2);
-      border-color: #ff4444;
-      transform: scale(1.1);
-    }
-
-    #muteBtn:active {
-      transform: scale(0.95);
-    }
-
-    #muteBtn svg {
-      position: relative;
-      z-index: 1;
-      width: 26px;
-      height: 26px;
-      transition: all 0.3s ease;
-      filter: drop-shadow(0 0 4px rgba(255,68,68,0.6));
-    }
-
-    #muteBtn:hover svg {
-      filter: drop-shadow(0 0 8px rgba(255,68,68,1));
-    }
-
-    /* wave bars that animate when sound is on */
-    .mute-wave {
-      transform-origin: bottom center;
-      animation: waveBar 1.2s ease-in-out infinite;
-    }
-    .mute-wave:nth-child(1) { animation-delay: 0s;    }
-    .mute-wave:nth-child(2) { animation-delay: 0.2s;  }
-    .mute-wave:nth-child(3) { animation-delay: 0.4s;  }
-
-    @keyframes waveBar {
-      0%, 100% { transform: scaleY(0.4); }
-      50%       { transform: scaleY(1);   }
-    }
-
-    #muteBtn.is-muted .mute-wave {
-      animation: none;
-      transform: scaleY(0.4);
-      opacity: 0.4;
-    }
-
-    /* ── Top Navigation ── */
-    .topLinks {
-      display: flex;
-      justify-content: center;
-      gap: 35px;
-      padding-top: 25px;
-      z-index: 1500;
-    }
-
-    .topLinks a {
-      font-family: 'Cinzel', serif;
-      font-size: 13px;
-      color: #ff4444;
-      text-decoration: none;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-      position: relative;
-      text-shadow:
-        0 0 8px #ff4444,
-        0 0 20px #8b0000,
-        0 0 40px #8b0000;
-      animation: linkGlow 3s ease-in-out infinite;
-    }
-
-    @keyframes linkGlow {
-      0%, 100% {
-        text-shadow: 0 0 8px #ff4444, 0 0 20px #8b0000, 0 0 40px #8b0000;
-      }
-      50% {
-        text-shadow: 0 0 12px #ff6666, 0 0 30px #ff4444, 0 0 60px #8b0000;
-      }
-    }
-
-    .topLinks a::after {
-      content: "";
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: #ff4444;
-      box-shadow: 0 0 6px #ff4444;
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-      transform-origin: center;
-    }
-
-    .topLinks a:hover {
-      color: #ff6666;
-      text-shadow:
-        0 0 15px #ff6666,
-        0 0 35px #ff4444,
-        0 0 60px #8b0000;
-    }
-
-    .topLinks a:hover::after {
-      transform: scaleX(1);
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 1200px) {
-      .grid { grid-template-columns: repeat(3, 1fr); padding: 40px; }
-    }
-
-    @media (max-width: 768px) {
-      .grid          { grid-template-columns: repeat(2, 1fr); gap: 25px; padding: 25px; }
-      .intro h1      { font-size: 40px; }
-      .title         { font-size: 32px; margin: 70px 0; }
-      .modal-content { width: 95%; padding: 40px 25px; }
-    }
-
-    @media (max-width: 480px) {
-      .grid     { grid-template-columns: 1fr; }
-      .intro h1 { font-size: 32px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ℭ-oas // Archive</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Cutive+Mono&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+
+<style>
+*,
+*::before,
+*::after{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --bg:#030201;
+  --paper:#8c7a53;
+  --paper2:#73613f;
+  --paper3:#5f4e31;
+  --ink:#130d07;
+  --red:#4b0000;
+  --red2:#220000;
+  --dust:rgba(255,255,255,.03);
+
+  --frak:'UnifrakturMaguntia',cursive;
+  --type:'Special Elite',cursive;
+  --mono:'Cutive Mono',monospace;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#000;
+  cursor:none;
+  user-select:none;
+  font-family:var(--type);
+}
+
+/* ─────────────────────────────
+   CURSOR
+───────────────────────────── */
+
+#cursor{
+  position:fixed;
+  width:10px;
+  height:10px;
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:999999;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+  transition:
+    width .15s,
+    height .15s,
+    border-color .15s;
+}
+
+#cursor.big{
+  width:22px;
+  height:22px;
+  border-color:#8a0000;
+}
+
+/* ─────────────────────────────
+   WORLD FX
+───────────────────────────── */
+
+#grain,
+#vignette,
+#flicker,
+#dust,
+#scratches{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+
+#grain{
+  z-index:9998;
+  opacity:.45;
+
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+}
+
+#vignette{
+  z-index:9997;
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 10%,
+      rgba(0,0,0,.55) 55%,
+      rgba(0,0,0,.96) 100%
+    );
+}
+
+#flicker{
+  z-index:9996;
+  animation:flicker .16s step-end infinite;
+}
+
+@keyframes flicker{
+  0%,92%,100%{opacity:0;}
+  93%{opacity:.08;}
+  94%{opacity:0;}
+  96%{opacity:.12;}
+  97%{opacity:0;}
+}
+
+#dust{
+  z-index:9995;
+  overflow:hidden;
+}
+
+#dust::before,
+#dust::after{
+  content:'';
+  position:absolute;
+  inset:-50%;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.03) 1px, transparent 1px);
+
+  background-size:160px 160px;
+  animation:dust 70s linear infinite;
+}
+
+#dust::after{
+  opacity:.45;
+  animation-duration:120s;
+}
+
+@keyframes dust{
+  from{transform:translateY(0);}
+  to{transform:translateY(220px);}
+}
+
+#scratches{
+  z-index:9994;
+  opacity:.12;
+
+  background:
+    repeating-linear-gradient(
+      110deg,
+      transparent 0,
+      transparent 120px,
+      rgba(255,255,255,.05) 121px,
+      transparent 122px
+    );
+}
+
+/* ─────────────────────────────
+   INTRO
+───────────────────────────── */
+
+#intro{
+  position:fixed;
+  inset:0;
+  z-index:4000;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+
+  background:
+    radial-gradient(circle at center,#080604 0%,#000 80%);
+
+  transition:opacity 2s ease;
+}
+
+#intro.hide{
+  opacity:0;
+  pointer-events:none;
+}
+
+.intro-small{
+  font-family:var(--mono);
+  font-size:8px;
+  letter-spacing:8px;
+  color:#21180f;
+  text-transform:uppercase;
+  margin-bottom:26px;
+
+  animation:rise 2s .3s both;
+}
+
+.intro-title{
+  font-family:var(--frak);
+  font-size:clamp(80px,16vw,170px);
+  color:#d9ccb1;
+  line-height:1;
+  letter-spacing:8px;
+
+  text-shadow:
+    0 0 40px rgba(255,255,255,.03),
+    0 0 120px rgba(100,30,10,.1);
+
+  animation:rise 2s .7s both;
+
+  position:relative;
+}
+
+.intro-title::after{
+  content:'ℭ-oas';
+  position:absolute;
+  inset:0;
+  color:transparent;
+
+  text-shadow:
+    2px 1px 0 rgba(0,0,0,.4),
+    -1px 0 0 rgba(120,40,10,.15);
+}
+
+.intro-line{
+  width:1px;
+  height:50px;
+  background:linear-gradient(to bottom,#1d130b,transparent);
+  margin:28px 0;
+
+  animation:rise 2s 1s both;
+}
+
+.intro-sub{
+  font-family:var(--mono);
+  font-size:8px;
+  letter-spacing:7px;
+  text-transform:uppercase;
+  color:#1c130b;
+  margin-bottom:44px;
+
+  animation:rise 2s 1.2s both;
+}
+
+.enter{
+  border:1px solid rgba(80,40,20,.35);
+  padding:13px 42px;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:8px;
+  text-transform:uppercase;
+  color:#342416;
+
+  position:relative;
+  overflow:hidden;
+
+  animation:rise 2s 1.5s both;
+}
+
+.enter::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:rgba(60,0,0,.6);
+
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .4s ease;
+}
+
+.enter:hover{
+  color:#cdbd9c;
+}
+
+.enter:hover::before{
+  transform:scaleX(1);
+}
+
+.enter span{
+  position:relative;
+  z-index:2;
+}
+
+@keyframes rise{
+  from{
+    opacity:0;
+    transform:translateY(15px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* ─────────────────────────────
+   BOARD
+───────────────────────────── */
+
+#board{
+  position:fixed;
+  inset:0;
+  display:none;
+  overflow:hidden;
+
+  animation:drift 18s ease-in-out infinite;
+}
+
+#board.show{
+  display:block;
+}
+
+@keyframes drift{
+  0%{
+    transform:scale(1) translate(0,0);
+  }
+
+  50%{
+    transform:scale(1.01) translate(-5px,-2px);
+  }
+
+  100%{
+    transform:scale(1) translate(0,0);
+  }
+}
+
+.board-bg{
+  position:absolute;
+  inset:0;
+
+  background:
+    radial-gradient(circle at 20% 10%, rgba(120,70,20,.08), transparent 25%),
+    radial-gradient(circle at 80% 70%, rgba(90,40,10,.07), transparent 30%),
+    radial-gradient(circle at 40% 90%, rgba(40,20,5,.12), transparent 35%),
+
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.006) 0px,
+      rgba(255,255,255,.006) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+
+    linear-gradient(
+      180deg,
+      #0a0806 0%,
+      #050403 100%
+    );
+
+  filter:brightness(.7) contrast(1.15) sepia(.25);
+}
+
+/* ─────────────────────────────
+   LAMP
+───────────────────────────── */
+
+.lamp{
+  position:absolute;
+  top:-280px;
+  left:50%;
+
+  width:900px;
+  height:520px;
+
+  transform:translateX(-50%);
+  transform-origin:top center;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(160,90,30,.06) 0%,
+      transparent 65%
+    );
+
+  animation:lamp 9s ease-in-out infinite;
+}
+
+@keyframes lamp{
+  0%{
+    transform:translateX(-50%) rotate(-1deg);
+  }
+
+  50%{
+    transform:translateX(-50%) rotate(1deg);
+  }
+
+  100%{
+    transform:translateX(-50%) rotate(-1deg);
+  }
+}
+
+/* ─────────────────────────────
+   HEADER
+───────────────────────────── */
+
+.header{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+
+  padding:20px 30px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  z-index:10;
+}
+
+.logo{
+  font-family:var(--frak);
+  font-size:24px;
+  letter-spacing:5px;
+  color:rgba(180,140,80,.18);
+}
+
+.status{
+  font-family:var(--mono);
+  font-size:7px;
+  letter-spacing:5px;
+  color:rgba(130,100,60,.18);
+  text-transform:uppercase;
+}
+
+/* ─────────────────────────────
+   FILES
+───────────────────────────── */
+
+#files{
+  position:absolute;
+  inset:0;
+  z-index:5;
+}
+
+.file{
+  position:absolute;
+  transform:translate(-50%,-50%);
+}
+
+.file-inner{
+  position:relative;
+
+  width:160px;
+
+  background:
+    linear-gradient(
+      160deg,
+      #8d7b54 0%,
+      #72603f 100%
+    );
+
+  border:1px solid rgba(0,0,0,.5);
+
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.9),
+    4px 4px 0 rgba(0,0,0,.3);
+
+  filter:
+    brightness(.72)
+    contrast(1.1)
+    sepia(.25);
+
+  transition:
+    transform .35s cubic-bezier(.34,1.4,.64,1),
+    filter .35s;
+}
+
+.file:hover .file-inner{
+  transform:
+    rotate(0deg)
+    scale(1.08)
+    translateY(-6px);
+
+  filter:
+    brightness(.9)
+    contrast(1.1)
+    sepia(.2);
+}
+
+.pin{
+  position:absolute;
+  top:-10px;
+  left:50%;
+
+  width:14px;
+  height:14px;
+
+  border-radius:50%;
+
+  transform:translateX(-50%);
+
+  background:
+    radial-gradient(circle at 30% 30%, #d34b4b, #5a0000 60%, #220000);
+
+  box-shadow:
+    0 0 8px rgba(100,0,0,.5),
+    0 3px 10px rgba(0,0,0,.8);
+
+  z-index:5;
+}
+
+.tape{
+  position:absolute;
+  top:-4px;
+  left:50%;
+
+  width:42px;
+  height:12px;
+
+  transform:translateX(-50%);
+
+  background:rgba(180,170,130,.08);
+  border:1px solid rgba(255,255,255,.03);
+}
+
+.photo{
+  position:relative;
+
+  width:100%;
+  height:128px;
+
+  background:
+    #17120d center/cover no-repeat;
+
+  border-bottom:2px solid rgba(0,0,0,.35);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  filter:
+    grayscale(100%)
+    contrast(1.25)
+    brightness(.6)
+    sepia(.3);
+
+  overflow:hidden;
+}
+
+.photo::before{
+  content:'';
+  position:absolute;
+  inset:0;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,.2) 0,
+      rgba(0,0,0,.2) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+.photo::after{
+  content:'';
+  position:absolute;
+  inset:0;
+
+  background:
+    radial-gradient(circle at 80% 10%, rgba(255,255,255,.05), transparent 35%),
+    radial-gradient(circle at 20% 100%, rgba(0,0,0,.5), transparent 40%);
+}
+
+.placeholder{
+  font-size:34px;
+  color:rgba(255,255,255,.12);
+}
+
+.file-body{
+  padding:10px;
+}
+
+.case{
+  font-family:var(--mono);
+  font-size:6px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:#433522;
+  margin-bottom:4px;
+}
+
+.name{
+  font-size:13px;
+  color:#160f08;
+  line-height:1.2;
+}
+
+.stamp{
+  position:absolute;
+  right:8px;
+  bottom:8px;
+
+  border:1px solid rgba(100,0,0,.5);
+
+  color:rgba(100,0,0,.6);
+
+  padding:2px 4px;
+
+  font-size:6px;
+  letter-spacing:2px;
+
+  transform:rotate(12deg);
+}
+
+/* ─────────────────────────────
+   NOTES
+───────────────────────────── */
+
+.note{
+  position:absolute;
+
+  color:#26160d;
+
+  font-size:10px;
+  line-height:1.6;
+
+  opacity:.65;
+
+  text-transform:uppercase;
+}
+
+/* ─────────────────────────────
+   STRINGS
+───────────────────────────── */
+
+#strings{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:2;
+}
+
+/* ─────────────────────────────
+   MODAL
+───────────────────────────── */
+
+#modal{
+  position:fixed;
+  inset:0;
+
+  z-index:7000;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:opacity .4s ease;
+}
+
+#modal.open{
+  opacity:1;
+  pointer-events:all;
+}
+
+.modal-bg{
+  position:absolute;
+  inset:0;
+
+  background:rgba(0,0,0,.95);
+  backdrop-filter:blur(10px);
+}
+
+.modal-box{
+  position:relative;
+
+  width:100%;
+  max-width:620px;
+
+  background:
+    linear-gradient(
+      160deg,
+      #99845a 0%,
+      #7b6744 100%
+    );
+
+  transform:rotate(-2deg);
+
+  box-shadow:
+    0 40px 100px rgba(0,0,0,.95);
+
+  overflow:hidden;
+}
+
+.modal-box::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+
+  height:4px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(90,0,0,.7),
+      transparent
+    );
+}
+
+.modal-inner{
+  display:flex;
+}
+
+.modal-left{
+  width:180px;
+
+  padding:24px;
+
+  background:rgba(0,0,0,.08);
+
+  border-right:1px solid rgba(0,0,0,.15);
+}
+
+.modal-photo{
+  width:100%;
+  height:200px;
+
+  background:#18120d center/cover no-repeat;
+
+  border:2px solid rgba(0,0,0,.25);
+
+  margin-bottom:14px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  filter:
+    grayscale(100%)
+    brightness(.7)
+    contrast(1.25);
+}
+
+.modal-name{
+  font-size:15px;
+  letter-spacing:2px;
+  color:#130d07;
+  margin-bottom:6px;
+}
+
+.modal-case{
+  font-family:var(--mono);
+  font-size:7px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:#4d3c26;
+}
+
+.modal-right{
+  flex:1;
+  padding:30px 26px;
+}
+
+.modal-label{
+  font-family:var(--mono);
+  font-size:7px;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  color:rgba(0,0,0,.4);
+
+  margin-bottom:16px;
+}
+
+.modal-quote{
+  font-size:13px;
+  line-height:2;
+  color:#160f08;
+  font-style:italic;
+  min-height:120px;
+}
+
+.close{
+  position:absolute;
+  top:14px;
+  right:16px;
+
+  width:28px;
+  height:28px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  border:1px solid rgba(0,0,0,.2);
+
+  color:rgba(0,0,0,.45);
+
+  transition:.3s;
+}
+
+.close:hover{
+  color:#5a0000;
+  transform:rotate(90deg);
+}
+
+@media(max-width:640px){
+
+  .modal-inner{
+    flex-direction:column;
+  }
+
+  .modal-left{
+    width:100%;
+    border-right:none;
+    border-bottom:1px solid rgba(0,0,0,.15);
+  }
+
+  .modal-photo{
+    height:120px;
+  }
+
+}
+</style>
 </head>
 <body>
 
-  <audio id="bgMusic" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2026/04/01/audio_ccff40b4f0.mp3?filename=atlasaudio-horror-ambience-512255.mp3" type="audio/mpeg">
-  </audio>
+<div id="cursor"></div>
 
-  <!-- Mute Button -->
-  <button id="muteBtn" aria-label="Toggle sound">
-    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M5 9.5H8.5L13 5.5V20.5L8.5 16.5H5V9.5Z"
-            stroke="#ff4444" stroke-width="1.5" stroke-linejoin="round" fill="rgba(139,0,0,0.15)"/>
-      <g id="soundWaves">
-        <path d="M16 9.5C17.2 10.7 17.2 15.3 16 16.5" stroke="#ff4444" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M18.5 7C20.8 9.3 20.8 16.7 18.5 19" stroke="#ff4444" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-      </g>
-      <g id="muteX" display="none">
-        <line x1="15" y1="10" x2="21" y2="16" stroke="#ff4444" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="21" y1="10" x2="15" y2="16" stroke="#ff4444" stroke-width="1.5" stroke-linecap="round"/>
-      </g>
-    </svg>
-  </button>
+<div id="grain"></div>
+<div id="vignette"></div>
+<div id="flicker"></div>
+<div id="dust"></div>
+<div id="scratches"></div>
 
-  <!-- Top Navigation (no wrapping header element) -->
-  <nav class="topLinks">
-    <a href="lol" target="_blank">LET</a>
-    <a href="lol" target="_blank">IT</a>
-    <a href="lol" target="_blank">GO</a>
-  </nav>
+<!-- INTRO -->
 
-  <!-- Intro Screen -->
-  <div class="intro" id="intro">
-    <div>
-      <h1>ℭ-oas Roster</h1>
-      <p>Enter To View</p>
-    </div>
+<div id="intro">
+
+  <div class="intro-small">
+    confidential archive
   </div>
 
-  <!-- Page Title -->
-  <h1 class="title">ℭ-OAS</h1>
-
-  <!-- Cards Grid -->
-  <main class="grid">
-
-    <!-- Profanity -->
-    <div class="card"
-         data-name="Profanity | Oppressionist"
-         data-role="Founder"
-         data-desc="Humans are the root of all evil">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/31/65/49/316549ab5583cc60a13d7e547eb5d5b9.jpg');"></div>
-      <div class="content">
-        <div class="name">Profanity | Oppressionist</div>
-        <div class="role">Founder</div>
-        <div class="desc">Humans are the root of all evil</div>
-      </div>
-    </div>
-
-    <!-- Seria -->
-    <div class="card"
-         data-name="Seria | Reset"
-         data-role="Co-Founder"
-         data-desc="Love is a illusion created by the government">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/280x280_RS/f3/f7/1e/f3f71e0c5f83db45347f6be904eea5ad.jpg');"></div>
-      <div class="content">
-        <div class="name">Seria | Reset</div>
-        <div class="role">Co-Founder</div>
-        <div class="desc">Love is a illusion created by the government</div>
-      </div>
-    </div>
-
-    <!-- Glock -->
-    <div class="card"
-         data-name="Glock"
-         data-role="Co-Owner"
-         data-desc="The blood of my beloved is my blood.">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/d2/f2/a5/d2f2a543b6ce395e98a572b5f04203bb.jpg');"></div>
-      <div class="content">
-        <div class="name">Glock</div>
-        <div class="role">Co-Owner</div>
-        <div class="desc">The blood of my beloved is my blood.</div>
-      </div>
-    </div>
-
-    <!-- Valentine -->
-    <div class="card"
-         data-name="Valentine"
-         data-role="CEO"
-         data-desc="Happy to be here">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/70/68/11/7068114b8281581b056be24ba036327a.jpg');"></div>
-      <div class="content">
-        <div class="name">Valentine</div>
-        <div class="role">CEO</div>
-        <div class="desc">Happy to be here</div>
-      </div>
-    </div>
-
-    <!-- Cold -->
-    <div class="card"
-         data-name="Cold"
-         data-role="Co-Founder"
-         data-desc="Probably ruining things">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/7b/ca/39/7bca3956e4a3aef125ce6f2879221e00.jpg');"></div>
-      <div class="content">
-        <div class="name">Cold</div>
-        <div class="role">Co-Founder</div>
-        <div class="desc">Probably ruining things</div>
-      </div>
-    </div>
-
-    <!-- Coach -->
-    <div class="card"
-         data-name="Coach"
-         data-role="High Ranked Member"
-         data-desc="Death within silence">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/88/48/26/884826220dc643e521f681d20fe99f97.jpg');"></div>
-      <div class="content">
-        <div class="name">Coach</div>
-        <div class="role">High Ranked Member</div>
-        <div class="desc">Death within silence</div>
-      </div>
-    </div>
-
-    <!-- Realm -->
-    <div class="card"
-         data-name="Realm"
-         data-role="High Ranked Member"
-         data-desc="My heart is tied to the ones I love">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/a5/69/32/a56932b3ef946ce0b58e3b0b88803419.jpg');"></div>
-      <div class="content">
-        <div class="name">Realm</div>
-        <div class="role">High Ranked Member</div>
-        <div class="desc">My heart is tied to the ones I love</div>
-      </div>
-    </div>
-
-    <!-- Bladed -->
-    <div class="card"
-         data-name="Bladed"
-         data-role="High Ranked Member"
-         data-desc="A sharp idea always cuts く">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/a3/31/ea/a331ea2144917ac2af3ab73708b6e514.jpg');"></div>
-      <div class="content">
-        <div class="name">Bladed</div>
-        <div class="role">High Ranked Member</div>
-        <div class="desc">A sharp idea always cuts く</div>
-      </div>
-    </div>
-
-    <!-- Silent -->
-    <div class="card"
-         data-name="Silent"
-         data-role="High Ranked Member"
-         data-desc="Making my way downtown">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/bf/b2/ab/bfb2ab3d057d07ddb59005c10bd58982.jpg');"></div>
-      <div class="content">
-        <div class="name">Silent</div>
-        <div class="role">High Ranked Member</div>
-        <div class="desc">Making my way downtown</div>
-      </div>
-    </div>
-
-    <!-- Beamed -->
-    <div class="card"
-         data-name="Beamed"
-         data-role="High Ranked Member"
-         data-desc="A good coder makes code a computer can understand; a great coder makes code humans can understand.">
-      <div class="banner"></div>
-      <div class="avatar" style="background-image:url('https://i.pinimg.com/736x/37/ea/92/37ea92d87a2001d1bdb04e0cc9fdac67.jpg');"></div>
-      <div class="content">
-        <div class="name">Beamed</div>
-        <div class="role">High Ranked Member</div>
-        <div class="desc">A good coder makes code a computer can understand; a great coder makes code humans can understand.</div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- Member Modal -->
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mName">
-    <div class="modal-content">
-      <div class="modal-close" id="close" role="button" tabindex="0" aria-label="Close">†</div>
-      <div class="modal-avatar" id="mAvatar"></div>
-      <h2 id="mName"></h2>
-      <p id="mRole"></p>
-      <p id="mDesc"></p>
-    </div>
+  <div class="intro-title">
+    ℭ-oas
   </div>
 
-  <script>
-    const intro   = document.getElementById('intro');
-    const cards   = document.querySelectorAll('.card');
-    const modal   = document.getElementById('modal');
-    const mName   = document.getElementById('mName');
-    const mRole   = document.getElementById('mRole');
-    const mDesc   = document.getElementById('mDesc');
-    const mAvatar = document.getElementById('mAvatar');
-    const closeBtn = document.getElementById('close');
-    const bgMusic = document.getElementById('bgMusic');
-    const muteBtn = document.getElementById('muteBtn');
+  <div class="intro-line"></div>
 
-    // ── Intro click: start music and reveal cards ──
-    intro.addEventListener('click', () => {
-      bgMusic.volume = 0.5;
-      bgMusic.play().catch(() => {});
+  <div class="intro-sub">
+    evidence board // abandoned sector
+  </div>
 
-      muteBtn.style.display = 'flex';
+  <div class="enter" id="enterBtn">
+    <span>Proceed</span>
+  </div>
 
-      document.body.classList.add('glitch');
-      setTimeout(() => document.body.classList.remove('glitch'), 1000);
+</div>
 
-      intro.classList.add('hide');
+<!-- BOARD -->
 
-      cards.forEach((card, i) => {
-        setTimeout(() => {
-          card.classList.add('revealed');
-          setTimeout(() => card.classList.add('unlocked'), 600);
-        }, i * 200);
-      });
+<div id="board">
 
-      setTimeout(() => intro.remove(), 1500);
+  <div class="board-bg"></div>
+
+  <div class="lamp"></div>
+
+  <div class="header">
+    <div class="logo">ℭ-oas</div>
+    <div class="status">cold case archive</div>
+  </div>
+
+  <svg id="strings"></svg>
+
+  <div id="files"></div>
+
+  <!-- notes -->
+
+  <div class="note" style="top:18%;left:14%;transform:rotate(-7deg);">
+    LAST SEEN<br>
+    03:14 AM
+  </div>
+
+  <div class="note" style="top:68%;left:72%;transform:rotate(5deg);">
+    HE KNEW<br>
+    TOO MUCH
+  </div>
+
+  <div class="note" style="top:30%;left:82%;transform:rotate(-4deg);">
+    DON'T TRUST<br>
+    THE REPORTS
+  </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div id="modal">
+
+  <div class="modal-bg" id="modalBg"></div>
+
+  <div class="modal-box">
+
+    <div class="close" id="closeBtn">
+      ✕
+    </div>
+
+    <div class="modal-inner">
+
+      <div class="modal-left">
+
+        <div class="modal-photo" id="modalPhoto">
+          <div class="placeholder" id="modalPH">?</div>
+        </div>
+
+        <div class="modal-name" id="modalName"></div>
+
+        <div class="modal-case" id="modalCase"></div>
+
+      </div>
+
+      <div class="modal-right">
+
+        <div class="modal-label">
+          statement on record
+        </div>
+
+        <div class="modal-quote" id="modalQuote"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const members = [
+
+  {
+    name:"Profanity",
+    alias:"Oppressionist",
+    quote:"language is a weapon. i never learned to put it down.",
+    img:"",
+    x:26,
+    y:42,
+    r:-9
+  },
+
+  {
+    name:"Seria",
+    alias:"Reset",
+    quote:"everything resets eventually. i just don't wait.",
+    img:"",
+    x:64,
+    y:48,
+    r:6
+  },
+
+  {
+    name:"Null",
+    alias:"Witness Zero",
+    quote:"they erased the footage. they forgot i was still watching.",
+    img:"",
+    x:47,
+    y:67,
+    r:-4
+  }
+
+];
+
+/* ─────────────────────────────
+   CURSOR
+───────────────────────────── */
+
+const cursor = document.getElementById('cursor');
+
+document.addEventListener('mousemove',e=>{
+
+  cursor.style.left = e.clientX+'px';
+  cursor.style.top = e.clientY+'px';
+
+});
+
+document.addEventListener('mousedown',()=>{
+  cursor.classList.add('big');
+});
+
+document.addEventListener('mouseup',()=>{
+  cursor.classList.remove('big');
+});
+
+/* ─────────────────────────────
+   INTRO
+───────────────────────────── */
+
+function enterArchive(){
+
+  const intro = document.getElementById('intro');
+
+  intro.classList.add('hide');
+
+  setTimeout(()=>{
+
+    intro.remove();
+
+    document
+      .getElementById('board')
+      .classList.add('show');
+
+    buildFiles();
+
+  },1800);
+
+}
+
+document
+  .getElementById('enterBtn')
+  .addEventListener('click',enterArchive);
+
+document.addEventListener('keydown',e=>{
+
+  if(e.key === 'Enter'){
+    enterArchive();
+  }
+
+});
+
+/* ─────────────────────────────
+   BUILD FILES
+───────────────────────────── */
+
+const fileRefs = [];
+
+function buildFiles(){
+
+  const files = document.getElementById('files');
+
+  members.forEach((m,i)=>{
+
+    const el = document.createElement('div');
+
+    el.className = 'file';
+
+    el.style.left = m.x+'%';
+    el.style.top = m.y+'%';
+
+    el.style.animation = `
+      rise .8s ${i*.2}s both
+    `;
+
+    const imgStyle = m.img
+      ? `background-image:url('${m.img}')`
+      : '';
+
+    el.innerHTML = `
+
+      <div class="file-inner"
+      style="transform:rotate(${m.r}deg);">
+
+        <div class="pin"></div>
+
+        <div class="tape"></div>
+
+        <div class="photo" style="${imgStyle}">
+          ${
+            !m.img
+            ? `<div class="placeholder">?</div>`
+            : ''
+          }
+        </div>
+
+        <div class="file-body">
+
+          <div class="case">
+            case file
+          </div>
+
+          <div class="name">
+            ${m.name}
+          </div>
+
+        </div>
+
+        <div class="stamp">
+          active
+        </div>
+
+      </div>
+
+    `;
+
+    el.addEventListener('mouseenter',()=>{
+      cursor.classList.add('big');
     });
 
-    // ── Mute toggle ──
-    const soundWaves = document.getElementById('soundWaves');
-    const muteX      = document.getElementById('muteX');
-
-    muteBtn.addEventListener('click', () => {
-      bgMusic.muted = !bgMusic.muted;
-      if (bgMusic.muted) {
-        muteBtn.classList.add('is-muted');
-        muteBtn.setAttribute('aria-label', 'Unmute sound');
-        soundWaves.setAttribute('display', 'none');
-        muteX.setAttribute('display', 'block');
-      } else {
-        muteBtn.classList.remove('is-muted');
-        muteBtn.setAttribute('aria-label', 'Mute sound');
-        soundWaves.setAttribute('display', 'block');
-        muteX.setAttribute('display', 'none');
-      }
+    el.addEventListener('mouseleave',()=>{
+      cursor.classList.remove('big');
     });
 
-    // ── Open modal on card click ──
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        document.body.classList.add('glitch');
-        setTimeout(() => document.body.classList.remove('glitch'), 300);
-
-        mName.textContent  = card.dataset.name;
-        mRole.textContent  = card.dataset.role;
-        mDesc.textContent  = card.dataset.desc;
-        mAvatar.style.backgroundImage = card.querySelector('.avatar').style.backgroundImage;
-
-        modal.classList.add('show');
-      });
+    el.addEventListener('click',()=>{
+      openModal(m);
     });
 
-    // ── Close modal ──
-    function closeModal() {
-      document.body.classList.add('glitch');
-      setTimeout(() => document.body.classList.remove('glitch'), 200);
-      modal.classList.remove('show');
+    files.appendChild(el);
+
+    fileRefs.push(el);
+
+  });
+
+  setTimeout(drawStrings,500);
+
+}
+
+function pinPos(el){
+
+  const r = el
+    .querySelector('.file-inner')
+    .getBoundingClientRect();
+
+  return{
+    x:r.left + r.width/2,
+    y:r.top + 10
+  };
+
+}
+
+function drawStrings(){
+
+  const svg = document.getElementById('strings');
+
+  for(let i=0;i<fileRefs.length;i++){
+
+    for(let j=i+1;j<fileRefs.length;j++){
+
+      const a = pinPos(fileRefs[i]);
+      const b = pinPos(fileRefs[j]);
+
+      const midX =
+        (a.x+b.x)/2 +
+        (Math.random()*40-20);
+
+      const midY =
+        (a.y+b.y)/2 +
+        80 +
+        (Math.random()*20);
+
+      const p = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'path'
+      );
+
+      p.setAttribute(
+        'd',
+        `M${a.x} ${a.y} Q${midX} ${midY} ${b.x} ${b.y}`
+      );
+
+      p.setAttribute('stroke','#2b0000');
+      p.setAttribute('stroke-width','1.8');
+      p.setAttribute('fill','none');
+      p.setAttribute('opacity','.75');
+
+      p.style.filter =
+        'drop-shadow(0 0 6px rgba(120,0,0,.45))';
+
+      svg.appendChild(p);
+
     }
 
-    closeBtn.addEventListener('click', closeModal);
-    closeBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') closeModal(); });
+  }
 
-    modal.addEventListener('click', e => {
-      if (e.target === modal) closeModal();
-    });
+}
 
-    // ── Random ambient glitch ──
-    setInterval(() => {
-      if (Math.random() < 0.1) {
-        document.body.classList.add('glitch');
-        setTimeout(() => document.body.classList.remove('glitch'), 100);
-      }
-    }, 3000);
+/* ─────────────────────────────
+   MODAL
+───────────────────────────── */
 
-    // ── Disable right-click ──
-    document.addEventListener('contextmenu', e => e.preventDefault());
+const modal = document.getElementById('modal');
 
-    // ── Block common devtools shortcuts ──
-    document.addEventListener('keydown', e => {
-      if (
-        e.key === 'F12' ||
-        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
-        (e.ctrlKey && e.key === 'U')
-      ) {
-        e.preventDefault();
-      }
-    });
-  </script>
+function openModal(m){
+
+  modal.classList.add('open');
+
+  const photo =
+    document.getElementById('modalPhoto');
+
+  photo.style.backgroundImage =
+    m.img
+    ? `url('${m.img}')`
+    : '';
+
+  document
+    .getElementById('modalPH')
+    .style.display =
+      m.img
+      ? 'none'
+      : 'flex';
+
+  document
+    .getElementById('modalName')
+    .textContent = m.name;
+
+  document
+    .getElementById('modalCase')
+    .textContent =
+      'Case: '+m.alias;
+
+  typeText(m.quote);
+
+}
+
+function closeModal(){
+
+  modal.classList.remove('open');
+
+}
+
+document
+  .getElementById('modalBg')
+  .addEventListener('click',closeModal);
+
+document
+  .getElementById('closeBtn')
+  .addEventListener('click',closeModal);
+
+document.addEventListener('keydown',e=>{
+
+  if(e.key === 'Escape'){
+    closeModal();
+  }
+
+});
+
+/* ─────────────────────────────
+   TYPE EFFECT
+───────────────────────────── */
+
+let typer;
+
+function typeText(text){
+
+  const target =
+    document.getElementById('modalQuote');
+
+  target.innerHTML = '';
+
+  clearInterval(typer);
+
+  let i = 0;
+
+  typer = setInterval(()=>{
+
+    if(i < text.length){
+
+      target.innerHTML += text[i];
+
+      i++;
+
+    }else{
+
+      clearInterval(typer);
+
+    }
+
+  },35);
+
+}
+
+/* disable right click */
+
+document.addEventListener('contextmenu',e=>{
+  e.preventDefault();
+});
+
+</script>
+
 </body>
 </html>
