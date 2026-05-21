@@ -3,313 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJECT: BLACK ARCHIVE</title>
-    <!-- Importing eerie fonts from Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fontsfonts.googleapis.com/css2?family=Creepster&family=Special+Elite&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
+    <title>SUBJECTS ARCHIVE</title>
     <style>
         /* =========================================
-           RESET & CORE VARIABLES
+           CORE & RESET
            ========================================= */
         :root {
-            --bg-color: #050505;
-            --text-primary: #a8a8a8;
-            --text-highlight: #dcdcdc;
-            --accent-red: #8a0f0f;
-            --accent-blood: #660000;
-            --scanline-color: rgba(0, 0, 0, 0.5);
-            --glitch-color-1: #00ffea;
-            --glitch-color-2: #ff0055;
-            --card-bg: #0e0e0e;
-            --font-typewriter: 'Special Elite', cursive;
-            --font-digital: 'Share Tech Mono', monospace;
-            --font-horror: 'Creepster', cursive;
+            --bg: #050505;
+            --bg-panel: #0a0a0a;
+            --text-dim: #555;
+            --text-mid: #888;
+            --text-bright: #ccc;
+            --red-muted: #4a1010;
+            --red-bright: #aa0000;
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-serif: 'Times New Roman', Times, serif;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: var(--font-typewriter);
+            background-color: var(--bg);
+            color: var(--text-mid);
+            font-family: var(--font-mono);
             overflow-x: hidden;
             min-height: 100vh;
-            cursor: crosshair;
+            line-height: 1.5;
         }
 
         /* =========================================
-           ATMOSPHERIC EFFECTS (Grain, Scanlines, Vignette)
+           OVERLAYS & VISUAL NOISE
            ========================================= */
         .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 9999;
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999;
         }
 
-        /* CRT Scanlines */
         .scanlines {
             background: linear-gradient(
                 to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.2) 50%,
-                rgba(0,0,0,0.2)
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.3) 50%
             );
             background-size: 100% 4px;
-            animation: scrollScan 10s linear infinite;
+            animation: scrollScan 8s linear infinite;
         }
 
-        /* Vignette */
         .vignette {
             background: radial-gradient(
                 circle,
-                rgba(0,0,0,0) 50%,
-                rgba(0,0,0,0.9) 100%
+                rgba(0,0,0,0) 60%,
+                rgba(0,0,0,0.95) 100%
             );
         }
 
-        /* Film Grain Noise Animation */
         .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.08;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0.07;
             z-index: 9998;
-            pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         /* =========================================
-           HEADER & NAVIGATION
+           TYPOGRAPHY DECORATIONS
+           ========================================= */
+        @keyframes scrollScan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        /* =========================================
+           HEADER SECTION
            ========================================= */
         header {
-            padding: 40px 20px;
             text-align: center;
-            border-bottom: 1px solid var(--accent-blood);
+            padding: 60px 20px 40px 20px;
+            border-bottom: 1px solid var(--red-muted);
             position: relative;
-            margin-bottom: 40px;
+            margin-bottom: 60px;
         }
 
-        h1 {
-            font-family: var(--font-digital);
-            font-size: 3rem;
-            letter-spacing: 5px;
-            color: var(--accent-blood);
-            text-shadow: 0 0 10px rgba(138, 15, 15, 0.5);
-            text-transform: uppercase;
-            position: relative;
-            display: inline-block;
-        }
-
-        h1::before, h1::after {
-            content: "CLASSIFIED";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-            overflow: hidden;
-            color: var(--text-highlight);
-            opacity: 0.8;
-        }
-
-        h1::before {
-            left: 2px;
-            text-shadow: -1px 0 var(--glitch-color-2);
-            clip-path: inset(24% 0 29% 0);
-            animation: glitch2 2.5s infinite linear alternate-reverse;
-        }
-
-        h1::after {
-            left: -2px;
-            text-shadow: -1px 0 var(--glitch-color-1);
-            clip-path: inset(85% 0 1% 0);
-            animation: glitch 4s infinite linear alternate-reverse;
-        }
-
-        .case-number {
-            font-family: var(--font-typewriter);
-            font-size: 1rem;
-            color: #444;
-            margin-top: 10px;
-        }
-
-        /* Floating Classification Stamp */
-        .stamp {
+        .header-decoration {
             position: absolute;
             top: 20px;
-            right: 20px;
-            border: 2px solid var(--accent-red);
-            color: var(--accent-red);
-            padding: 5px 15px;
-            transform: rotate(15deg);
-            font-family: var(--font-digital);
-            opacity: 0.7;
-            font-weight: bold;
+            right: 30px;
+            border: 2px solid var(--red-bright);
+            color: var(--red-bright);
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            transform: rotate(12deg);
+            opacity: 0.8;
             letter-spacing: 2px;
         }
 
-        /* =========================================
-           GRID CONTAINER
-           ========================================= */
-        .archive-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            padding: 20px 40px 80px 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-            perspective: 1000px;
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 4rem;
+            color: var(--red-muted);
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px var(--red-muted);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .divider {
+            width: 100px;
+            height: 2px;
+            background: var(--red-bright);
+            margin: 30px auto;
+            box-shadow: 0 0 5px var(--red-bright);
         }
 
         /* =========================================
-           MEMBER PROFILE CARD ("CASE FILE")
+           CONTENT GRID
            ========================================= */
-        .file-card {
-            background: var(--card-bg);
-            border: 1px solid #1a1a1a;
-            padding: 0;
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+            padding: 40px 60px 100px 60px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* =========================================
+           PROFILE CARD DESIGN
+           ========================================= */
+        .card {
+            background: var(--bg-panel);
+            border: 1px solid #1f1f1f;
             position: relative;
+            padding: 0;
             display: flex;
             flex-direction: column;
-            transition: all 0.4s ease;
-            box-shadow: 0 0 15px rgba(0,0,0,0.8);
-            /* Old Folder Style: slightly yellowed filter */
-            filter: sepia(30%) contrast(110%);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .file-card:hover {
-            transform: scale(1.02) skewX(-2deg);
-            border-color: var(--accent-red);
-            box-shadow: 0 0 25px rgba(138, 15, 15, 0.3);
-            filter: sepia(0%) contrast(120%);
-            z-index: 100;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            border-color: var(--red-muted);
         }
 
-        /* The "Mugshot" Area */
-        .photo-frame {
+        /* PHOTO AREA */
+        .photo-area {
             width: 100%;
-            height: 250px;
+            height: 300px;
             overflow: hidden;
             position: relative;
-            background: #000;
-            border-bottom: 2px solid var(--accent-blood);
+            border-bottom: 1px solid var(--red-muted);
         }
 
-        .photo-frame img {
+        .photo-area img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: grayscale(100%) brightness(0.8) blur(1px);
-            transition: all 0.5s ease;
-            opacity: 0.6;
+            filter: grayscale(100%) brightness(0.6) contrast(1.2);
+            transition: filter 0.4s ease;
         }
 
-        .file-card:hover .photo-frame img {
-            filter: grayscale(0%) brightness(1.1) contrast(120%);
-            opacity: 1;
+        .card:hover .photo-area img {
+            filter: grayscale(0%) brightness(0.9) contrast(1.1);
         }
 
-        /* Grunge overlay on image */
-        .photo-frame::after {
-            content: "";
+        /* Overlay effects on hover */
+        .photo-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+');
+            background: linear-gradient(to bottom, transparent 60%, #000);
             pointer-events: none;
         }
 
-        /* Card Body */
-        .file-content {
-            padding: 20px;
-            position: relative;
-        }
-
-        /* Redaction Tape Effect on Top */
-        .file-content::before {
-            content: "CONFIDENTIAL";
+        .photo-stamp {
             position: absolute;
-            top: 10px;
-            right: -30px;
-            background: var(--accent-blood);
+            top: 15px;
+            right: -25px;
+            background: var(--red-bright);
             color: #000;
-            font-size: 0.6rem;
-            padding: 2px 20px;
+            padding: 4px 30px;
             transform: rotate(45deg);
             font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            opacity: 0.8;
-        }
-
-        .subject-id {
-            font-family: var(--font-digital);
-            font-size: 0.8rem;
-            color: var(--accent-red);
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .username {
-            font-family: var(--font-typewriter);
-            font-size: 1.5rem;
-            color: var(--text-highlight);
-            margin-bottom: 10px;
-            border-bottom: 1px dashed #333;
-            padding-bottom: 5px;
-        }
-
-        .alias {
-            display: block;
-            font-size: 0.9rem;
-            color: var(--accent-red);
-            margin-top: -5px;
-            font-style: italic;
+            font-size: 0.7rem;
             opacity: 0.7;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
-        .quote {
-            font-family: var(--font-typewriter);
-            font-size: 0.95rem;
-            line-height: 1.4;
-            color: #777;
-            margin-top: 15px;
-            font-style: italic;
+        /* INFO CONTENT */
+        .info-content {
+            padding: 25px;
             position: relative;
-            padding-left: 15px;
         }
 
-        .quote::before {
-            content: ">>";
-            position: absolute;
-            left: 0;
-            color: var(--accent-red);
+        .meta-data {
+            font-size: 0.7rem;
+            color: var(--red-bright);
+            margin-bottom: 8px;
+            display: block;
+            font-family: monospace;
+            letter-spacing: 1px;
         }
 
-        .file-status {
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
-            width: 10px;
-            height: 10px;
+        .name-display {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            color: var(--text-bright);
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+            margin-bottom: 5px;
+        }
+
+        .alias-display {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .quote-box {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 15px;
+            border-left: 2px solid var(--red-muted);
+            margin-top: 15px;
+        }
+
+        .quote-text {
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* STATUS INDICATOR */
+        .status-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background-color: #222;
-            box-shadow: 0 0 5px #222;
-            animation: pulse 3s infinite;
+            background: var(--red-bright);
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            box-shadow: 0 0 5px var(--red-bright);
+            animation: pulse 2s infinite;
         }
 
-        .file-card:hover .file-status {
-            background-color: var(--accent-blood);
-            box-shadow: 0 0 10px var
+        @keyframes pulse {
+            0% { opacity: 0.5; box-shadow: 0 0 2px var(--red-bright); }
+            50% { opacity: 1; box-shadow: 0 0 10px var(--red-bright); }
+            100% { opacity: 0.5; box-shadow: 0 0 2px var(--red-bright); }
+        }
+
+        /* DECORATIVE CORNERS */
+        .corner {
+            position: absolute;
+            width: 10px; height: 10px;
+            border-color: var(--text-dim);
+            border-style: solid;
+            border-width: 0;
+            transition: border-color 0.3s;
+        }
+        .card:hover .corner { border-color: var(--red-bright); }
+        .c-tl { top: -1px; left: -1px; border-top-width: 1px; border-left-width: 1px; }
+        .c-tr { top: -1px; right: -1px; border-top-width: 1px; border-right-width: 1px; }
+        .c-bl { bottom: -1px; left: -1px; border-bottom-width: 1px; border-left-width: 1px; }
+        .c-br { bottom: -1px; right: -1px; border-bottom-width: 1px; border-right-width: 1px; }
+
+        /* =========================================
+           FOOTER
+           ========================================= */
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--red-muted);
+        }
+        
+        /* =========================================
+           SCROLLBAR
+           ========================================= */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #222; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--red-muted); }
+
+    </style>
+</head>
+<body>
+
+    <!-- ATMOSPHERIC LAYERS -->
+    <div class="overlay scanlines"></div>
+    <div class="overlay vignette"></div>
+    <div class="noise"></div>
+
+    <header>
+        <div class="header-decoration">CONFIDENTIAL</div>
+        <h1>Subject Files</h1>
+        <div class="divider"></div>
+        <p class="subtitle">Case No. 99-Alpha // Archive Retrieval</p>
+    </header>
+
+    <div class="container">
+
+        <!-- MEMBER 1 -->
+        <div class="card">
+            <div class="corner c-tl"></div>
+            <div class="corner c-tr"></div>
+            <div class="corner c-bl"></div>
+            <div class="corner c-br"></div>
+            
+            <div class="photo-area">
+                <div class="photo-stamp">FILE 001</div>
+                <img src="https://i.pinimg.com/736x/83/73/56/8373560616a827f2dacc0f646416c921.jpg" alt="Subject Portrait">
+                <div class="photo-overlay"></div>
+            </div>
+            
+            <div class="info-content">
+                <span class="meta-data">ID: OP-774 // CLASS: A</span>
+                <h2 class="name-display">Profanity</h2>
+                <div class="alias-display">Oppressionist</div>
+                
+                <div class="quote-box">
+                    <p class="quote-text">"Humans are the root of all evil"</p>
+                </div>
+                
+                <div class="status-dot"></div>
+            </div>
+        </div>
+
+        <!-- MEMBER 2 -->
+        <div class="card">
+            <div class="corner c-tl"></div>
+            <div class="corner c-tr"></div>
+            <div class="corner c-bl"></div>
+            <div class="corner c-br"></div>
+            
+            <div class="photo-area">
+                <div class="photo-stamp">FILE 002</div>
+                <img src="https://i.pinimg.com/280x280_RS/f3/f7/1e/f3f71e0c5f83db45347f6be904eea5ad.jpg" alt="Subject Portrait">
+                <div class="photo-overlay"></div>
+            </div>
+            
+            <div class="info-content">
+                <span class="meta-data">ID: RS-332 // CLASS: B</span>
+                <h2 class="name-display">Seria</h2>
+                <div class="alias-display">Reset</div>
+                
+                <div class="quote-box">
+                    <p class="quote-text">"Love is an illusion created by the government"</p>
+                </div>
+                
+                <div class="status-dot"></div>
+            </div>
+        </div>
+
+        <!-- MEMBER 3 -->
+        <div class="card">
+            <div class="corner c-tl"></div>
+            <div class="corner c-tr"></div>
+            <div class="corner c-bl"></div>
+            <div class="corner c-br"></div>
+            
+            <div class="photo-area">
+                <div class="photo-stamp">FILE 003</div>
+                <img src="https://i.pinimg.com/736x/d2/f2/a5/d2f2a543b6ce395e98a572b5f04203bb.jpg" alt="Subject Portrait">
+                <div class="photo-overlay"></div>
+            </div>
+            
+            <div class="info-content">
+                <span class="meta-data">ID: GL-901 // CLASS: A</span>
+                <h2 class="name-display">Glock</h2>
+                <div class="alias-display">--</div>
+                
+                <div class="quote-box">
+                    <p class="quote-text">"The blood of my beloved is my blood"</p>
+                </div>
+                
+                <div class="status-dot"></div>
+            </div>
+        </div>
+
+        <!-- MEMBER 4 -->
+        <div class="card">
+            <div class="corner c-tl"></div>
+            <div class="corner c-tr"></div>
+            <div class="corner c-bl"></div>
+            <div class="corner c-br"></div>
+            
+            <div class="photo-area">
+                <div class="photo-stamp">FILE 004</div>
+                <img src="https://i.pinimg.com/736x/70/68/11/7068114b8281581b056be24ba036327a.jpg" alt="Subject Portrait">
+                <div class="photo-overlay"></div>
+            </div>
+            
+            <div class="info-content">
+                <span class="meta-data">ID: VL-112 // CLASS: C</span>
+                <h2 class="name-display">Valentine</h2>
+                <div class="alias-display">--</div>
+                
+                <div class="quote-box">
+                    <p class="quote-text">"Happy to be here"</p>
+                </div>
+                
+                <div class="status-dot"></div>
+            </div>
+        </div>
+
+        <!-- MEMBER 5 -->
+        <div class="card">
+            <div class="corner c-tl"></div>
+            <div class="corner c-tr"></div>
+            <div class="corner c-bl"></div>
+            <div class="corner c-br"></div>
+            
+            <div class="photo-area">
+                <div class="photo-stamp">FILE 005</div>
+                <img src="https://i.pinimg.com/736x/7b/ca/39/7bca3956e4a3aef125ce6f2879221e00.jpg" alt="Subject Portrait">
+                <div class="photo-overlay"></div>
+            </div>
+            
+            <div class="info-content">
+                <span class="meta-data">ID: CD-044 // CLASS: B</span>
+                <h2 class="name-display">Cold</h2>
+                <div class="alias-display">--</div>
+                
+                <div class="quote-box">
+                    <p class="quote-text">"Probably ruining things"</p>
+                </div>
+                
+                <div class="status-dot"></div>
+            </div>
+        </div>
+
+        <!-- MEMBER 6 -->
