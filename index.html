@@ -10,73 +10,75 @@
 
 body {
   margin: 0;
-  background: radial-gradient(circle at center, #050505, #000000);
-  color: #e6e6e6;
-  font-family: 'Cinzel', serif;
   overflow: hidden;
+  font-family: 'Cinzel', serif;
+  background: #000;
+  color: #e6e6e6;
 }
 
-/* INTRO SCREEN */
+/* INTRO */
 #intro {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, #0a0a0a, #000);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  background: radial-gradient(circle, #0a0a0a, #000);
+  z-index: 999;
 }
 
 #intro h1 {
   font-size: 60px;
   letter-spacing: 4px;
-  color: #c9c9c9;
-  text-shadow: 0 0 10px black;
 }
 
 #proceed {
   margin-top: 20px;
   font-family: 'Special Elite', monospace;
   cursor: pointer;
-  color: #777;
-  transition: 0.3s;
+  color: #888;
 }
-
-#proceed:hover {
-  color: #fff;
-  letter-spacing: 3px;
-}
+#proceed:hover { color: #fff; }
 
 /* BOARD */
 #board {
   position: absolute;
   inset: 0;
   display: none;
-  background: radial-gradient(circle at center, #0b0b0b, #000);
+
+  /* YOUR IMAGE HERE */
+  background: url("/mnt/data/bf309fa1-c105-42a7-8bd1-658fb4c4d779.png") center/cover no-repeat;
 }
 
-/* SVG CONNECTION LINES */
+/* DARK OVERLAY FOR SINISTER FEEL */
+#board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+}
+
+/* LINES */
 svg {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
+  inset: 0;
+  z-index: 1;
 }
 
 line {
-  stroke: rgba(255, 0, 0, 0.25);
+  stroke: rgba(255,0,0,0.25);
   stroke-width: 2;
 }
 
-/* CASE FILE */
+/* CASE FILES */
 .case {
   position: absolute;
   width: 140px;
   text-align: center;
   cursor: pointer;
-  transition: 0.2s;
   z-index: 2;
+  transition: 0.2s;
 }
 
 .case:hover {
@@ -87,14 +89,14 @@ line {
   width: 100%;
   border-radius: 6px;
   border: 1px solid #333;
-  filter: contrast(1.1) grayscale(0.2);
+  filter: grayscale(0.2) contrast(1.1);
 }
 
 .case span {
   display: block;
   margin-top: 5px;
   font-size: 12px;
-  color: #aaa;
+  color: #bbb;
 }
 
 /* POPUP */
@@ -105,23 +107,22 @@ line {
   display: none;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
+  z-index: 9999;
 }
 
 #popup-content {
-  width: 500px;
-  padding: 20px;
-  border: 1px solid #333;
+  width: 520px;
   background: #0a0a0a;
+  border: 1px solid #333;
+  padding: 20px;
   position: relative;
 }
 
 #close {
   position: absolute;
-  top: 10px;
   right: 15px;
+  top: 10px;
   cursor: pointer;
-  font-size: 20px;
   transition: 0.3s;
 }
 
@@ -137,18 +138,16 @@ line {
 
 #quote {
   font-family: 'Special Elite', monospace;
-  color: #ccc;
   min-height: 60px;
-  margin-bottom: 20px;
+  color: #ccc;
 }
 
 .links a {
   display: block;
-  margin: 5px 0;
+  margin-top: 6px;
   color: #444;
-  text-decoration: none;
   letter-spacing: 2px;
-  transition: 0.3s;
+  text-decoration: none;
 }
 
 .links a:hover {
@@ -159,52 +158,50 @@ line {
 
 <body>
 
-<!-- INTRO -->
 <div id="intro">
   <h1>ℭ-oas</h1>
   <div id="proceed">proceed</div>
 </div>
 
-<!-- BOARD -->
 <div id="board">
 
-  <svg id="lines"></svg>
+<svg id="lines"></svg>
 
-  <div class="case" style="top:120px; left:200px;" 
-       data-name="Vex"
-       data-quote="Truth is never found... only uncovered."
-       data-img="https://i.pravatar.cc/200?img=12"
-       data-links="alpha.com,beta.com,gamma.com">
-    <img src="https://i.pravatar.cc/200?img=12">
-    <span>Case Vex</span>
-  </div>
+<div class="case" style="top:120px; left:200px;"
+data-name="Vex"
+data-quote="Truth is never found... only uncovered."
+data-img="https://i.pravatar.cc/200?img=12"
+data-links="alpha.com,beta.com,gamma.com">
+<img src="https://i.pravatar.cc/200?img=12">
+<span>Case Vex</span>
+</div>
 
-  <div class="case" style="top:300px; left:500px;"
-       data-name="Nyx"
-       data-quote="I was never missing. I was hiding."
-       data-img="https://i.pravatar.cc/200?img=32"
-       data-links="one.com,two.com,three.com">
-    <img src="https://i.pravatar.cc/200?img=32">
-    <span>Case Nyx</span>
-  </div>
+<div class="case" style="top:320px; left:520px;"
+data-name="Nyx"
+data-quote="I was never missing. I was hiding."
+data-img="https://i.pravatar.cc/200?img=32"
+data-links="one.com,two.com,three.com">
+<img src="https://i.pravatar.cc/200?img=32">
+<span>Case Nyx</span>
+</div>
 
-  <div class="case" style="top:180px; left:800px;"
-       data-name="Orion"
-       data-quote="Every answer creates another question."
-       data-img="https://i.pravatar.cc/200?img=45"
-       data-links="red.com,blue.com,green.com">
-    <img src="https://i.pravatar.cc/200?img=45">
-    <span>Case Orion</span>
-  </div>
+<div class="case" style="top:180px; left:820px;"
+data-name="Orion"
+data-quote="Every answer creates another question."
+data-img="https://i.pravatar.cc/200?img=45"
+data-links="red.com,blue.com,green.com">
+<img src="https://i.pravatar.cc/200?img=45">
+<span>Case Orion</span>
+</div>
 
 </div>
 
-<!-- POPUP -->
 <div id="popup">
   <div id="popup-content">
     <div id="close">✕</div>
     <img id="pimg">
     <div id="quote"></div>
+
     <div class="links">
       <a id="l1">DONT</a>
       <a id="l2">LET</a>
@@ -227,17 +224,16 @@ document.getElementById("proceed").onclick = () => {
   drawLines();
 };
 
-/* TYPEWRITER */
-function typeWriter(text, i = 0) {
+function typeWriter(text) {
   quoteBox.innerHTML = "";
-  let interval = setInterval(() => {
-    quoteBox.innerHTML += text.charAt(i);
+  let i = 0;
+  let t = setInterval(() => {
+    quoteBox.innerHTML += text[i];
     i++;
-    if (i >= text.length) clearInterval(interval);
-  }, 35);
+    if (i >= text.length) clearInterval(t);
+  }, 30);
 }
 
-/* OPEN CASE */
 cases.forEach(c => {
   c.onclick = () => {
     popup.style.display = "flex";
@@ -248,19 +244,16 @@ cases.forEach(c => {
     document.getElementById("l1").href = "https://" + links[0];
     document.getElementById("l2").href = "https://" + links[1];
     document.getElementById("l3").href = "https://" + links[2];
-  }
+  };
 });
 
-/* CLOSE */
 document.getElementById("close").onclick = () => {
   popup.style.display = "none";
   quoteBox.innerHTML = "";
 };
 
-/* DRAW RED STRINGS */
 function drawLines() {
   const svg = document.getElementById("lines");
-  const rects = [...cases].map(c => c.getBoundingClientRect());
 
   cases.forEach((c1, i) => {
     cases.forEach((c2, j) => {
@@ -268,16 +261,11 @@ function drawLines() {
         let r1 = c1.getBoundingClientRect();
         let r2 = c2.getBoundingClientRect();
 
-        let x1 = r1.left + r1.width/2;
-        let y1 = r1.top + r1.height/2;
-        let x2 = r2.left + r2.width/2;
-        let y2 = r2.top + r2.height/2;
-
-        let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", x1);
-        line.setAttribute("y1", y1);
-        line.setAttribute("x2", x2);
-        line.setAttribute("y2", y2);
+        let line = document.createElementNS("http://www.w3.org/2000/svg","line");
+        line.setAttribute("x1", r1.left + r1.width/2);
+        line.setAttribute("y1", r1.top + r1.height/2);
+        line.setAttribute("x2", r2.left + r2.width/2);
+        line.setAttribute("y2", r2.top + r2.height/2);
 
         svg.appendChild(line);
       }
