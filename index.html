@@ -268,27 +268,85 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
 
 .b-header{
   position:absolute;top:0;left:0;right:0;
-  padding:14px 30px;
+  padding:0 28px;
+  height:64px;
   display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(139,0,0,.12);
+  border-bottom:1px solid rgba(139,0,0,.2);
   z-index:10;
-  background:linear-gradient(to bottom,rgba(0,0,0,.4),transparent);
+  background:linear-gradient(to bottom,rgba(0,0,0,.75) 0%,rgba(0,0,0,.3) 100%);
 }
-.b-title{
+
+/* left side — small logo */
+.b-logo{
   font-family:var(--fraktur);
-  font-size:22px;letter-spacing:5px;
-  color:rgba(180,60,40,.35);
-  text-shadow:0 0 20px rgba(180,0,0,.3);
+  font-size:18px;letter-spacing:4px;
+  color:rgba(160,50,30,.4);
+  text-shadow:0 0 14px rgba(160,0,0,.25);
+  flex-shrink:0;
 }
-.b-stamp{
-  font-family:var(--mono);font-size:7px;letter-spacing:6px;
-  color:rgba(140,20,10,.25);text-transform:uppercase;
+
+/* centre — ROSTER TITLE */
+.b-roster{
+  position:absolute;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  pointer-events:none;
 }
+.b-roster-label{
+  font-family:var(--mono);font-size:7px;letter-spacing:8px;
+  color:rgba(180,0,0,.5);text-transform:uppercase;
+  text-shadow:0 0 10px rgba(180,0,0,.4);
+}
+.b-roster-title{
+  font-family:var(--fraktur);font-size:28px;letter-spacing:6px;
+  color:#e8dac0;line-height:1;
+  text-shadow:
+    0 0 18px rgba(220,0,10,.55),
+    0 0 40px rgba(160,0,0,.3),
+    0 0 80px rgba(100,0,0,.15),
+    2px 2px 0 rgba(60,0,0,.2);
+  animation:rosterPulse 5s ease-in-out infinite;
+}
+@keyframes rosterPulse{
+  0%,100%{text-shadow:0 0 18px rgba(220,0,10,.55),0 0 40px rgba(160,0,0,.3),2px 2px 0 rgba(60,0,0,.2);}
+  50%{text-shadow:0 0 28px rgba(255,0,10,.75),0 0 60px rgba(180,0,0,.45),0 0 100px rgba(120,0,0,.2),2px 2px 0 rgba(60,0,0,.2);}
+}
+
+/* right side — mute button */
+#muteBtn{
+  flex-shrink:0;
+  width:40px;height:40px;
+  border:1px solid rgba(139,0,0,.45);
+  border-radius:50%;
+  background:rgba(10,0,0,.6);
+  display:flex;align-items:center;justify-content:center;
+  cursor:none;
+  position:relative;overflow:hidden;
+  transition:border-color .3s,box-shadow .3s,background .3s;
+  box-shadow:0 0 10px rgba(100,0,0,.2),inset 0 0 8px rgba(0,0,0,.4);
+}
+#muteBtn::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,rgba(180,0,0,.15),transparent 65%);
+}
+#muteBtn:hover{
+  border-color:rgba(200,0,10,.7);
+  box-shadow:0 0 20px rgba(180,0,0,.45),inset 0 0 10px rgba(100,0,0,.2);
+  background:rgba(30,0,0,.7);
+}
+#muteBtn svg{
+  width:18px;height:18px;
+  position:relative;z-index:1;
+  transition:opacity .25s;
+}
+#muteBtn.muted svg.icon-sound{display:none;}
+#muteBtn.muted svg.icon-muted{display:block;}
+#muteBtn:not(.muted) svg.icon-sound{display:block;}
+#muteBtn:not(.muted) svg.icon-muted{display:none;}
 
 /* scrollable board area */
 #board-scroll{
   position:absolute;
-  top:50px;left:0;right:0;bottom:0;
+  top:64px;left:0;right:0;bottom:0;
   overflow-y:auto;overflow-x:hidden;
 }
 #board-scroll::-webkit-scrollbar{width:4px;}
@@ -616,10 +674,13 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
 
   /* board header */
   .b-stamp{display:none;}
-  .b-title{font-size:17px;}
+  .b-logo{font-size:14px;}
+  .b-roster-title{font-size:20px;letter-spacing:3px;}
+  .b-roster-label{font-size:6px;letter-spacing:5px;}
+  #muteBtn{cursor:auto;}
 
   /* replace absolute board with a flex grid */
-  #board-scroll{top:44px;}
+  #board-scroll{top:64px;}
   #board-inner{
     height:auto !important;
     min-height:unset;
@@ -698,13 +759,35 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
   <div class="intro-btn" id="proceedBtn" tabindex="0">Proceed</div>
 </div>
 
+<!-- AUDIO -->
+<audio id="bgAudio" loop preload="auto">
+  <source src="https://cdn.pixabay.com/download/audio/2026/04/01/audio_ccff40b4f0.mp3?filename=atlasaudio-horror-ambience-512255.mp3" type="audio/mpeg">
+</audio>
+
 <!-- BOARD -->
 <div id="board">
   <div class="cork-bg"></div>
   <div class="lamp"></div>
   <div class="b-header">
-    <div class="b-title">ℭ-oas</div>
-    <div class="b-stamp">// evidence board — cold case — do not touch</div>
+    <div class="b-logo">ℭ-oas</div>
+    <div class="b-roster">
+      <div class="b-roster-label">— official —</div>
+      <div class="b-roster-title">ℭ-oas Roster</div>
+    </div>
+    <button id="muteBtn" class="muted" aria-label="Toggle sound">
+      <!-- sound on -->
+      <svg class="icon-sound" viewBox="0 0 24 24" fill="none" stroke="#c0000a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+      </svg>
+      <!-- muted -->
+      <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="#4a0808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <line x1="23" y1="9" x2="17" y2="15"/>
+        <line x1="17" y1="9" x2="23" y2="15"/>
+      </svg>
+    </button>
   </div>
   <div id="board-scroll">
     <div id="board-inner">
@@ -750,12 +833,12 @@ const defaultLinks=[
   const members = [
   {
     name:"Profanity | Oppressionist",alias:"DON'T LET GO",role:"Founder",
-    img:"https://i.pinimg.com/736x/31/65/49/316549ab5583cc60a13d7e547eb5d5b9.jpg",
+    img:"https://i.pinimg.com/736x/83/73/56/8373560616a827f2dacc0f646416c921.jpg",
     quote:"Humans are the root of all evil.",
     links:defaultLinks,rot:-6, pos:{x:10,y:25}
   },
   {
-    name:"Seria | Reset",alias:"DON'T LET GO",role:"Co-Founder",
+    name:"Seria | Rest",alias:"DON'T LET GO",role:"Co-Founder",
     img:"https://i.pinimg.com/280x280_RS/f3/f7/1e/f3f71e0c5f83db45347f6be904eea5ad.jpg",
     quote:"Love is an illusion created by the government.",
     links:[
@@ -783,7 +866,7 @@ const defaultLinks=[
     links:defaultLinks,rot:-5, pos:{x:90,y:26}
   },
   {
-    name:"Coach",alias:"DON'T LET GO",role:"High Ranked Member",
+    name:"Coach",alias:"",role:"High Ranked Member",
     img:"https://i.pinimg.com/736x/88/48/26/884826220dc643e521f681d20fe99f97.jpg",
     quote:"Death within silence.",
     links:defaultLinks,rot:4, pos:{x:10,y:68}
@@ -869,10 +952,27 @@ function launch(){
     intro.remove();
     board.classList.add('on');
     buildBoard();
+    // start audio
+    const audio=document.getElementById('bgAudio');
+    audio.volume=0.35;
+    audio.play().catch(()=>{});
   },2500);
 }
 document.getElementById('proceedBtn').addEventListener('click',launch);
 document.addEventListener('keydown',e=>{if(e.key==='Enter')launch();});
+
+// ── MUTE BUTTON ───────────────────────────────────────────────
+document.getElementById('muteBtn').addEventListener('click',()=>{
+  const audio=document.getElementById('bgAudio');
+  const btn=document.getElementById('muteBtn');
+  if(audio.muted){
+    audio.muted=false;
+    btn.classList.remove('muted');
+  } else {
+    audio.muted=true;
+    btn.classList.add('muted');
+  }
+});
 
 // ── BUILD BOARD ───────────────────────────────────────────────
 const fileEls=[];
