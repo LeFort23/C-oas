@@ -1,374 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>ℭ-OAS // CORRUPTED ARCHIVE</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT: BLACK ARCHIVE</title>
+    <!-- Importing eerie fonts from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fontsfonts.googleapis.com/css2?family=Creepster&family=Special+Elite&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-<style>
-/* ===========================
-   GLOBAL RESET + BASE
-=========================== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Courier New", monospace;
-}
+    <style>
+        /* =========================================
+           RESET & CORE VARIABLES
+           ========================================= */
+        :root {
+            --bg-color: #050505;
+            --text-primary: #a8a8a8;
+            --text-highlight: #dcdcdc;
+            --accent-red: #8a0f0f;
+            --accent-blood: #660000;
+            --scanline-color: rgba(0, 0, 0, 0.5);
+            --glitch-color-1: #00ffea;
+            --glitch-color-2: #ff0055;
+            --card-bg: #0e0e0e;
+            --font-typewriter: 'Special Elite', cursive;
+            --font-digital: 'Share Tech Mono', monospace;
+            --font-horror: 'Creepster', cursive;
+        }
 
-body {
-  background: radial-gradient(circle at center, #050505, #000000);
-  color: #cfcfcf;
-  overflow-x: hidden;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* ===========================
-   SCANLINES + NOISE OVERLAY
-=========================== */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.03),
-    rgba(255,255,255,0.03) 1px,
-    transparent 2px,
-    transparent 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
-}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-typewriter);
+            overflow-x: hidden;
+            min-height: 100vh;
+            cursor: crosshair;
+        }
 
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: url('https://grainy-gradients.vercel.app/noise.svg');
-  opacity: 0.08;
-  pointer-events: none;
-  z-index: 9998;
-}
+        /* =========================================
+           ATMOSPHERIC EFFECTS (Grain, Scanlines, Vignette)
+           ========================================= */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
 
-/* ===========================
-   INTRO SCREEN
-=========================== */
-#intro {
-  position: fixed;
-  inset: 0;
-  background: black;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-}
+        /* CRT Scanlines */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            animation: scrollScan 10s linear infinite;
+        }
 
-#intro h1 {
-  font-size: 60px;
-  letter-spacing: 10px;
-  color: #b30000;
-  text-shadow: 0 0 20px #ff0000;
-}
+        /* Vignette */
+        .vignette {
+            background: radial-gradient(
+                circle,
+                rgba(0,0,0,0) 50%,
+                rgba(0,0,0,0.9) 100%
+            );
+        }
 
-#intro p {
-  margin-top: 20px;
-  letter-spacing: 5px;
-  cursor: pointer;
-  color: #777;
-}
+        /* Film Grain Noise Animation */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.08;
+            z-index: 9998;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
 
-/* ===========================
-   ARCHIVE LAYOUT
-=========================== */
-#archive {
-  display: none;
-  padding: 40px;
-}
+        /* =========================================
+           HEADER & NAVIGATION
+           ========================================= */
+        header {
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--accent-blood);
+            position: relative;
+            margin-bottom: 40px;
+        }
 
-#title {
-  text-align: center;
-  font-size: 40px;
-  letter-spacing: 12px;
-  color: #8b0000;
-  margin-bottom: 40px;
-  text-shadow: 0 0 10px #ff0000;
-}
+        h1 {
+            font-family: var(--font-digital);
+            font-size: 3rem;
+            letter-spacing: 5px;
+            color: var(--accent-blood);
+            text-shadow: 0 0 10px rgba(138, 15, 15, 0.5);
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+        }
 
-/* ===========================
-   DETECTIVE BOARD
-=========================== */
-.board {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-}
+        h1::before, h1::after {
+            content: "CLASSIFIED";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            overflow: hidden;
+            color: var(--text-highlight);
+            opacity: 0.8;
+        }
 
-.card {
-  background: rgba(10,10,10,0.9);
-  border: 1px solid #2a0000;
-  padding: 15px;
-  position: relative;
-  transition: 0.3s;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(255,0,0,0.1);
-}
+        h1::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--glitch-color-2);
+            clip-path: inset(24% 0 29% 0);
+            animation: glitch2 2.5s infinite linear alternate-reverse;
+        }
 
-.card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 20px rgba(255,0,0,0.3);
-}
+        h1::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--glitch-color-1);
+            clip-path: inset(85% 0 1% 0);
+            animation: glitch 4s infinite linear alternate-reverse;
+        }
 
-.card img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  border: 1px solid #3a0000;
-}
+        .case-number {
+            font-family: var(--font-typewriter);
+            font-size: 1rem;
+            color: #444;
+            margin-top: 10px;
+        }
 
-.username {
-  margin-top: 10px;
-  font-size: 18px;
-  color: #ff2a2a;
-}
+        /* Floating Classification Stamp */
+        .stamp {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border: 2px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 5px 15px;
+            transform: rotate(15deg);
+            font-family: var(--font-digital);
+            opacity: 0.7;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
 
-.quote {
-  margin-top: 5px;
-  font-size: 12px;
-  color: #aaa;
-  font-style: italic;
-}
+        /* =========================================
+           GRID CONTAINER
+           ========================================= */
+        .archive-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 20px 40px 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
 
-/* ===========================
-   RED STRING CONNECTIONS
-=========================== */
-.line {
-  position: absolute;
-  width: 2px;
-  height: 100px;
-  background: red;
-  opacity: 0.3;
-  transform-origin: top;
-}
+        /* =========================================
+           MEMBER PROFILE CARD ("CASE FILE")
+           ========================================= */
+        .file-card {
+            background: var(--card-bg);
+            border: 1px solid #1a1a1a;
+            padding: 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+            /* Old Folder Style: slightly yellowed filter */
+            filter: sepia(30%) contrast(110%);
+        }
 
-/* ===========================
-   MODAL CASE FILE
-=========================== */
-#modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.9);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 10001;
-}
+        .file-card:hover {
+            transform: scale(1.02) skewX(-2deg);
+            border-color: var(--accent-red);
+            box-shadow: 0 0 25px rgba(138, 15, 15, 0.3);
+            filter: sepia(0%) contrast(120%);
+            z-index: 100;
+        }
 
-#modalContent {
-  width: 400px;
-  background: #0a0a0a;
-  border: 1px solid #300000;
-  padding: 20px;
-}
+        /* The "Mugshot" Area */
+        .photo-frame {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+            border-bottom: 2px solid var(--accent-blood);
+        }
 
-#modalContent h2 {
-  color: red;
-  margin-bottom: 10px;
-}
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) brightness(0.8) blur(1px);
+            transition: all 0.5s ease;
+            opacity: 0.6;
+        }
 
-#close {
-  margin-top: 10px;
-  cursor: pointer;
-  color: #777;
-}
+        .file-card:hover .photo-frame img {
+            filter: grayscale(0%) brightness(1.1) contrast(120%);
+            opacity: 1;
+        }
 
-/* ===========================
-   GLITCH EFFECT
-=========================== */
-.glitch {
-  animation: glitch 1s infinite;
-}
+        /* Grunge overlay on image */
+        .photo-frame::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+');
+            pointer-events: none;
+        }
 
-@keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px,2px); }
-  40% { transform: translate(2px,-2px); }
-  60% { transform: translate(-1px,1px); }
-  80% { transform: translate(1px,-1px); }
-  100% { transform: translate(0); }
-}
+        /* Card Body */
+        .file-content {
+            padding: 20px;
+            position: relative;
+        }
 
-</style>
-</head>
+        /* Redaction Tape Effect on Top */
+        .file-content::before {
+            content: "CONFIDENTIAL";
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            background: var(--accent-blood);
+            color: #000;
+            font-size: 0.6rem;
+            padding: 2px 20px;
+            transform: rotate(45deg);
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            opacity: 0.8;
+        }
 
-<body>
+        .subject-id {
+            font-family: var(--font-digital);
+            font-size: 0.8rem;
+            color: var(--accent-red);
+            margin-bottom: 5px;
+            display: block;
+        }
 
-<!-- ===========================
-     INTRO SCREEN
-=========================== -->
-<div id="intro">
-  <h1 class="glitch">ℭ-OAS</h1>
-  <p onclick="enterSite()">PROCEED</p>
-</div>
+        .username {
+            font-family: var(--font-typewriter);
+            font-size: 1.5rem;
+            color: var(--text-highlight);
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 5px;
+        }
 
-<!-- ===========================
-     ARCHIVE
-=========================== -->
-<div id="archive">
-  <div id="title">CORRUPTED CASE FILE ARCHIVE</div>
-  <div class="board" id="board"></div>
-</div>
+        .alias {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--accent-red);
+            margin-top: -5px;
+            font-style: italic;
+            opacity: 0.7;
+        }
 
-<!-- ===========================
-     MODAL
-=========================== -->
-<div id="modal">
-  <div id="modalContent">
-    <h2 id="mName"></h2>
-    <p id="mQuote"></p>
-    <p id="close" onclick="closeModal()">CLOSE FILE</p>
-  </div>
-</div>
+        .quote {
+            font-family: var(--font-typewriter);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #777;
+            margin-top: 15px;
+            font-style: italic;
+            position: relative;
+            padding-left: 15px;
+        }
 
-<script>
-/* ===========================
-   MEMBER DATA
-=========================== */
-const members = [
-{
-name:"Profanity | Oppressionist",
-quote:"Humans are the root of all evil",
-img:"https://i.pinimg.com/736x/83/73/56/8373560616a827f2dacc0f646416c921.jpg"
-},
-{
-name:"Seria | Reset",
-quote:"Love is an illusion created by the government",
-img:"https://i.pinimg.com/280x280_RS/f3/f7/1e/f3f71e0c5f83db45347f6be904eea5ad.jpg"
-},
-{
-name:"Glock",
-quote:"The blood of my beloved is my blood",
-img:"https://i.pinimg.com/736x/d2/f2/a5/d2f2a543b6ce395e98a572b5f04203bb.jpg"
-},
-{
-name:"Valentine",
-quote:"Happy to be here",
-img:"https://i.pinimg.com/736x/70/68/11/7068114b8281581b056be24ba036327a.jpg"
-},
-{
-name:"Cold",
-quote:"Probably ruining things",
-img:"https://i.pinimg.com/736x/7b/ca/39/7bca3956e4a3aef125ce6f2879221e00.jpg"
-},
-{
-name:"Coach",
-quote:"Death within silence",
-img:"https://i.pinimg.com/736x/88/48/26/884826220dc643e521f681d20fe99f97.jpg"
-},
-{
-name:"Realm",
-quote:"My heart is tied to the ones I love",
-img:"https://i.pinimg.com/736x/a5/69/32/a56932b3ef946ce0b58e3b0b88803419.jpg"
-},
-{
-name:"Bladed",
-quote:"A sharp idea always cuts く",
-img:"https://i.pinimg.com/736x/a3/31/ea/a331ea2144917ac2af3ab73708b6e514.jpg"
-},
-{
-name:"Silent",
-quote:"Making my way downtown",
-img:"https://i.pinimg.com/736x/bf/b2/ab/bfb2ab3d057d07ddb59005c10bd58982.jpg"
-},
-{
-name:"Beamed",
-quote:"A good coder makes code human readable",
-img:"https://i.pinimg.com/736x/37/ea/92/37ea92d87a2001d1bdb04e0cc9fdac67.jpg"
-}
-];
+        .quote::before {
+            content: ">>";
+            position: absolute;
+            left: 0;
+            color: var(--accent-red);
+        }
 
-/* ===========================
-   BUILD BOARD
-=========================== */
-const board = document.getElementById("board");
+        .file-status {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #222;
+            box-shadow: 0 0 5px #222;
+            animation: pulse 3s infinite;
+        }
 
-members.forEach((m,i)=>{
-  const card = document.createElement("div");
-  card.className = "card";
-  card.onclick = ()=>openModal(m);
-
-  card.innerHTML = `
-    <img src="${m.img}">
-    <div class="username">${m.name}</div>
-    <div class="quote">"${m.quote}"</div>
-  `;
-
-  board.appendChild(card);
-});
-
-/* ===========================
-   INTRO CONTROL
-=========================== */
-function enterSite(){
-  document.getElementById("intro").style.display="none";
-  document.getElementById("archive").style.display="block";
-}
-
-/* ===========================
-   MODAL CONTROL
-=========================== */
-function openModal(m){
-  document.getElementById("modal").style.display="flex";
-  document.getElementById("mName").innerText=m.name;
-  document.getElementById("mQuote").innerText=m.quote;
-}
-
-function closeModal(){
-  document.getElementById("modal").style.display="none";
-}
-
-/* ===========================
-   BACKGROUND STATIC EFFECT
-=========================== */
-setInterval(()=>{
-  document.body.style.filter = "contrast("+(1+Math.random()*0.1)+")";
-},2000);
-
-</script>
-
-<!-- =========================================================
-     EXTENDED LORE / ARCHIVE PADDING (FOR DEPTH + ATMOSPHERE)
-     (intentionally extended for 500+ line structure)
-========================================================= -->
-
-<script>
-// archival noise logs
-for(let i=0;i<200;i++){
-  console.log("ARCHIVE LOG #" + i + " // RECORD CORRUPTED // SUBJECT UNSTABLE");
-}
-</script>
-
-<style>
-/* filler atmospheric layers */
-.layer1{position:fixed;inset:0;opacity:.02;background:red;}
-.layer2{position:fixed;inset:0;opacity:.02;background:blue;}
-.layer3{position:fixed;inset:0;opacity:.02;background:green;}
-.layer4{position:fixed;inset:0;opacity:.02;background:purple;}
-.layer5{position:fixed;inset:0;opacity:.02;background:white;}
-/* repeated micro noise expansion */
-.n1{filter:blur(1px);}
-.n2{filter:blur(2px);}
-.n3{filter:blur(3px);}
-.n4{filter:blur(4px);}
-.n5{filter:blur(5px);}
-</style>
-
-<div class="layer1"></div>
-<div class="layer2"></div>
-<div class="layer3"></div>
-<div class="layer4"></div>
-<div class="layer5"></div>
-
-</body>
-</html>
+        .file-card:hover .file-status {
+            background-color: var(--accent-blood);
+            box-shadow: 0 0 10px var
