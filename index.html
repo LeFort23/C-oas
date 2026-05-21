@@ -146,9 +146,10 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
 
 .intro-pre{
   font-family:var(--mono);font-size:9px;letter-spacing:9px;
-  color:#2a1010;text-transform:uppercase;
+  color:#c0443a;text-transform:uppercase;
   margin-bottom:36px;
   animation:rise 2.5s 0.3s both;
+  text-shadow:0 0 12px rgba(180,0,0,.6),0 0 30px rgba(140,0,0,.3);
 }
 
 .intro-title{
@@ -193,21 +194,23 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
 
 .intro-sub{
   font-family:var(--mono);font-size:10px;letter-spacing:7px;
-  color:#2a1010;text-transform:uppercase;
+  color:#b03030;text-transform:uppercase;
   margin-bottom:52px;
   animation:rise 2.5s 1.3s both;
+  text-shadow:0 0 10px rgba(180,0,0,.5),0 0 25px rgba(120,0,0,.25);
 }
 
 .intro-btn{
   font-family:var(--mono);font-size:10px;letter-spacing:9px;
-  color:#3a1810;text-transform:uppercase;
-  border:1px solid #2a0808;
+  color:#c04040;text-transform:uppercase;
+  border:1px solid rgba(140,0,0,.4);
   padding:14px 44px;
   cursor:none;
   position:relative;overflow:hidden;
-  transition:color .4s,border-color .4s,box-shadow .4s;
+  transition:color .4s,border-color .4s,box-shadow .4s,text-shadow .4s;
   animation:rise 2.5s 1.7s both;
   background:transparent;
+  text-shadow:0 0 8px rgba(180,0,0,.4);
 }
 .intro-btn::before{
   content:'';position:absolute;inset:0;
@@ -382,12 +385,13 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
 
 .cf-body{padding:9px 9px 12px;position:relative;}
 .cf-role{
-  font-family:var(--mono);font-size:6px;letter-spacing:3px;
-  color:rgba(100,20,10,.7);text-transform:uppercase;margin-bottom:2px;
+  font-family:var(--mono);font-size:7.5px;letter-spacing:2px;
+  color:#c0000a;text-transform:uppercase;margin-bottom:3px;
+  text-shadow:0 0 6px rgba(200,0,10,.8),0 0 14px rgba(160,0,0,.5);
 }
 .cf-name{
-  font-family:var(--type);font-size:13.5px;letter-spacing:1px;
-  color:#1a0a06;line-height:1.2;
+  font-family:var(--type);font-size:15px;letter-spacing:1px;
+  color:#140806;line-height:1.2;
 }
 
 .cf-stamp{
@@ -512,18 +516,20 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
 .m-photo-ph{font-size:36px;color:rgba(60,45,25,.3);position:relative;z-index:2;}
 
 .m-name{
-  font-family:var(--type);font-size:15px;letter-spacing:2px;
-  color:#1a0a06;text-align:center;margin-bottom:3px;
+  font-family:var(--type);font-size:20px;letter-spacing:2px;
+  color:#1a0a06;text-align:center;margin-bottom:5px;
 }
 .m-case-lbl{
-  font-family:var(--mono);font-size:7px;letter-spacing:4px;
-  color:rgba(100,20,10,.65);text-transform:uppercase;text-align:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:4px;
+  color:rgba(80,15,5,.8);text-transform:uppercase;text-align:center;
 }
 .m-role-lbl{
-  font-family:var(--mono);font-size:6px;letter-spacing:3px;
-  color:rgba(120,0,0,.5);text-transform:uppercase;text-align:center;
-  margin-top:4px;
-  border:1px solid rgba(100,0,0,.2);padding:2px 6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:3px;
+  color:#c0000a;text-transform:uppercase;text-align:center;
+  margin-top:6px;
+  border:1px solid rgba(160,0,0,.5);padding:4px 8px;
+  text-shadow:0 0 8px rgba(200,0,10,.7),0 0 20px rgba(140,0,0,.4);
+  box-shadow:0 0 10px rgba(140,0,0,.2);
 }
 .m-rule{width:40px;height:1px;background:rgba(100,0,0,.2);margin:14px auto 0;}
 
@@ -533,13 +539,13 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
 }
 
 .m-sec{
-  font-family:var(--mono);font-size:7px;letter-spacing:6px;
-  color:rgba(120,20,10,.45);text-transform:uppercase;margin-bottom:14px;
+  font-family:var(--mono);font-size:9px;letter-spacing:5px;
+  color:rgba(100,15,5,.65);text-transform:uppercase;margin-bottom:14px;
 }
 
 .m-quote{
-  font-family:var(--type);font-size:13px;
-  line-height:2;color:#1a0a06;
+  font-family:var(--type);font-size:16px;
+  line-height:1.85;color:#140806;
   font-style:italic;flex:1;min-height:80px;
   position:relative;
 }
@@ -550,26 +556,29 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
   position:absolute;top:-10px;left:-8px;line-height:1;
 }
 .tc{
-  display:inline-block;width:1px;height:13px;
+  display:inline-block;width:1px;height:16px;
   background:var(--red);vertical-align:middle;margin-left:1px;
   animation:blink .7s step-end infinite;
 }
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
 
 .m-links{
-  margin-top:20px;padding-top:16px;
-  border-top:1px solid rgba(0,0,0,.12);
-  display:flex;gap:5px;flex-wrap:wrap;
+  margin-top:22px;padding-top:18px;
+  border-top:2px solid rgba(100,0,0,.2);
+  display:flex;gap:8px;flex-wrap:wrap;
 }
 .sl{
-  font-family:var(--mono);font-size:7px;letter-spacing:5px;
-  color:rgba(80,20,10,.4);
+  font-family:var(--mono);font-size:11px;letter-spacing:4px;
+  color:#8b0000;
   text-decoration:none;
-  padding:7px 12px;
-  border:1px solid rgba(80,20,10,.14);
+  padding:10px 16px;
+  border:1px solid rgba(139,0,0,.5);
   text-transform:uppercase;
   transition:all .3s ease;
   cursor:none;position:relative;overflow:hidden;
+  text-shadow:0 0 8px rgba(180,0,0,.4);
+  box-shadow:0 0 6px rgba(100,0,0,.1);
+  font-weight:bold;
 }
 .sl::before{
   content:'';position:absolute;inset:0;
@@ -577,26 +586,96 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
   transform:scaleX(0);transform-origin:left;
   transition:transform .35s ease;
 }
-.sl:hover{color:rgba(220,190,150,.9);border-color:var(--red-dim);box-shadow:0 0 12px rgba(100,0,0,.2);}
+.sl:hover{
+  color:#f0d8b0;border-color:var(--red);
+  box-shadow:0 0 18px rgba(180,0,0,.4);
+  text-shadow:0 0 10px rgba(255,50,0,.6);
+}
 .sl:hover::before{transform:scaleX(1);}
 .sl span{position:relative;z-index:1;}
 
 .m-wm{
   position:absolute;bottom:10px;right:14px;z-index:1;
-  font-family:var(--mono);font-size:6px;letter-spacing:3px;
-  color:rgba(0,0,0,.12);text-transform:uppercase;
+  font-family:var(--mono);font-size:7px;letter-spacing:3px;
+  color:rgba(0,0,0,.15);text-transform:uppercase;
 }
 
 /* ══════════════════════════════
-   RESPONSIVE
+   MOBILE — phone layout
 ══════════════════════════════ */
-@media(max-width:560px){
+@media(max-width:600px){
+  /* hide the cork board absolute layout, use a scrollable grid instead */
+  body{cursor:auto;}
+  #cur,#cur-trail{display:none;}
+
+  /* intro tweaks */
+  .intro-pre{font-size:7px;letter-spacing:5px;}
+  .intro-title{font-size:clamp(52px,18vw,90px);letter-spacing:5px;}
+  .intro-sub{font-size:8px;letter-spacing:4px;}
+  .intro-btn{font-size:8px;letter-spacing:5px;padding:12px 28px;}
+
+  /* board header */
+  .b-stamp{display:none;}
+  .b-title{font-size:17px;}
+
+  /* replace absolute board with a flex grid */
+  #board-scroll{top:44px;}
+  #board-inner{
+    height:auto !important;
+    min-height:unset;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:28px;
+    padding:28px 16px 60px;
+  }
+
+  /* hide svg strings on mobile — too messy */
+  #sc{display:none;}
+
+  /* cards become inline-block in the flex grid */
+  .cf{
+    position:static !important;
+    transform:none !important;
+    left:auto !important;top:auto !important;
+    animation:appear .6s ease both;
+  }
+  /* keep the card inner rotation but smaller scale */
+  .cf-inner{
+    width:130px;
+    filter:brightness(.78) contrast(1.08) sepia(.2);
+  }
+  .cf:hover .cf-inner{
+    transform:rotate(0deg) scale(1.06) translateY(-4px);
+  }
+
+  /* modal full-screen on mobile */
+  #modal{padding:0;align-items:flex-end;}
+  .m-box{
+    max-width:100%;
+    border-radius:0;
+    transform:scale(1) translateY(100%) rotate(0deg);
+    max-height:90vh;
+    overflow-y:auto;
+  }
+  #modal.open .m-box{transform:translateY(0);}
   .m-inner{flex-direction:column;}
-  .m-left{width:100%;flex-direction:row;gap:16px;padding:18px 18px 14px;
-    border-right:none;border-bottom:1px solid rgba(0,0,0,.12);align-items:flex-start;}
-  .m-photo{width:74px;height:86px;margin-bottom:0;flex-shrink:0;}
+  .m-left{
+    width:100%;flex-direction:row;gap:14px;
+    padding:20px 18px 14px;
+    border-right:none;
+    border-bottom:1px solid rgba(0,0,0,.12);
+    align-items:center;
+  }
+  .m-photo{width:72px;height:84px;margin-bottom:0;flex-shrink:0;}
   .m-rule{display:none;}
-  .m-right{padding:18px 18px 22px;}
+  .m-right{padding:16px 18px 24px;}
+  .m-name{font-size:18px;text-align:left;}
+  .m-case-lbl,.m-role-lbl{text-align:left;}
+  .m-quote{font-size:14px;line-height:1.8;}
+  .m-sec{font-size:8px;}
+  .sl{font-size:10px;padding:9px 13px;cursor:auto;}
+  .m-x{cursor:auto;}
 }
 </style>
 </head>
@@ -662,66 +741,76 @@ body{background:var(--bg);font-family:var(--type);cursor:none;user-select:none;}
 
 <script>
 // ── DATA ─────────────────────────────────────────────────────
-const members = [
+const defaultLinks=[
+    {label:"DONT",href:"#"},
+    {label:"BETRAY",href:"#"},
+    {label:"GOD",href:"#"}
+  ];
+
+  const members = [
   {
-    name:"Profanity | Oppressionist",alias:"LET IT GO",role:"Founder",
+    name:"Profanity | Oppressionist",alias:"DONT LET GO",role:"Founder",
     img:"https://i.pinimg.com/736x/83/73/56/8373560616a827f2dacc0f646416c921.jpg",
     quote:"Humans are the root of all evil.",
-    links:[],rot:-6, pos:{x:10,y:25}
+    links:defaultLinks,rot:-6, pos:{x:10,y:25}
   },
   {
-    name:"Seria | Reset",alias:"LET IT GO",role:"Co-Founder",
+    name:"Seria | Reset",alias:"DONT LET GO",role:"Co-Founder",
     img:"https://i.pinimg.com/280x280_RS/f3/f7/1e/f3f71e0c5f83db45347f6be904eea5ad.jpg",
     quote:"Love is an illusion created by the government.",
-    links:[],rot:5, pos:{x:30,y:23}
+    links:[
+      {label:"DONT",href:"https://t.me/seria"},
+      {label:"BETRAY",href:"https://t.me/seria"},
+      {label:"GOD",href:"https://doxbin.com/seria"}
+    ],rot:5, pos:{x:30,y:23}
   },
   {
-    name:"Glock",alias:"LET IT GO",role:"High Ranked Member",
+    name:"Glock",alias:"DONT LET GO",role:"High Ranked Member",
     img:"https://i.pinimg.com/736x/d2/f2/a5/d2f2a543b6ce395e98a572b5f04203bb.jpg",
     quote:"The blood of my beloved is my blood.",
-    links:[],rot:-3, pos:{x:50,y:25}
+    links:defaultLinks,rot:-3, pos:{x:50,y:25}
   },
   {
-    name:"Valentine",alias:"LET IT GO",role:"High Ranked Member",
+    name:"Valentine",alias:"DONT LET GO",role:"High Ranked Member",
     img:"https://i.pinimg.com/736x/70/68/11/7068114b8281581b056be24ba036327a.jpg",
     quote:"Happy to be here.",
-    links:[],rot:7, pos:{x:70,y:23}
+    links:defaultLinks,rot:7, pos:{x:70,y:23}
   },
   {
-    name:"Cold",alias:"LET IT GO",role:"High Ranked Member",
+    name:"Cold",alias:"DONT LET GO",role:"High Ranked Member",
     img:"https://i.pinimg.com/736x/7b/ca/39/7bca3956e4a3aef125ce6f2879221e00.jpg",
     quote:"Probably ruining things.",
-    links:[],rot:-5, pos:{x:90,y:26}
+    links:defaultLinks,rot:-5, pos:{x:90,y:26}
   },
   {
-    name:"Coach",alias:"LET IT GO",role:"High Ranked Member",
+    name:"Coach",alias:"",role:"High Ranked Member",
     img:"https://i.pinimg.com/736x/88/48/26/884826220dc643e521f681d20fe99f97.jpg",
     quote:"Death within silence.",
-    links:[],rot:4, pos:{x:10,y:68}
+    links:defaultLinks,rot:4, pos:{x:10,y:68}
   },
   {
-    name:"Realm",alias:"LET IT GO",role:"High Ranked Member",
+    name:"Realm",alias:"DONT LET GO",role:"High Ranked Member",
     img:"https://i.pinimg.com/736x/a5/69/32/a56932b3ef946ce0b58e3b0b88803419.jpg",
     quote:"My heart is tied to the ones I love.",
-    links:[],rot:-4, pos:{x:30,y:70}
+    links:defaultLinks,rot:-4, pos:{x:30,y:70}
   },
   {
-    name:"Bladed",alias:"LET IT GO",role:"High Ranked Member",
+    name:"Bladed",alias:"DONT LET GO",role:"High Ranked Member",
     img:"https://i.pinimg.com/736x/a3/31/ea/a331ea2144917ac2af3ab73708b6e514.jpg",
     quote:"A sharp idea always cuts く",
-    links:[],rot:6, pos:{x:50,y:68}
+    links:defaultLinks,rot:6, pos:{x:50,y:68}
   },
   {
-    name:"Silent",alias:"LET IT GO",role:"High Ranked Member",
+    name:"Silent",alias:"DONT LET GO",role:"High Ranked Member",
     img:"https://i.pinimg.com/736x/bf/b2/ab/bfb2ab3d057d07ddb59005c10bd58982.jpg",
     quote:"Making my way downtown.",
-    links:[],rot:-3, pos:{x:70,y:70}
+    links:defaultLinks,rot:-3, pos:{x:70,y:70}
   },
   {
-    name:"Beamed",alias:"LET IT GO",role:"High Ranked Member",
+    name:"Beamed",alias:"DONT LET GO",role:"High Ranked Member",
     img:"https://i.pinimg.com/736x/37/ea/92/37ea92d87a2001d1bdb04e0cc9fdac67.jpg",
     quote:"A good coder makes code a computer can understand; a great coder makes code humans can understand.",
-    links:[],rot:5, pos:{x:90,y:68}
+    links:defaultLinks,rot:5, pos:{x:90,y:68}
   }
 ];
 
@@ -797,12 +886,11 @@ function buildBoard(){
     el.className='cf';
     el.style.cssText=`left:clamp(80px, ${m.pos.x}%, calc(100% - 80px));top:${m.pos.y}%;--r:${m.rot}deg;animation-delay:${i*.15}s;`;
 
-    const av=m.img?`background-image:url('${m.img}');background-size:cover;background-position:center top;`:'';
     el.innerHTML=`
       <div class="cf-inner">
         <div class="cf-scratch"></div>
-        <div class="cf-photo" style="${av}">
-          ${!m.img?`<div class="cf-ph">?</div>`:''}
+        <div class="cf-photo">
+          ${m.img?`<img src="${m.img}" referrerpolicy="no-referrer" crossorigin="anonymous" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:0;" />`:`<div class="cf-ph">?</div>`}
         </div>
         <div class="cf-body">
           <div class="cf-role">${m.role}</div>
@@ -891,13 +979,18 @@ let typer;
 function openModal(m){
   const mp=document.getElementById('mPhoto');
   const ph=document.getElementById('mPh');
+  // clear previous
+  const oldImg=mp.querySelector('img');
+  if(oldImg)oldImg.remove();
   if(m.img){
-    mp.style.backgroundImage=`url('${m.img}')`;
-    mp.style.backgroundSize='cover';
-    mp.style.backgroundPosition='center top';
+    const img=document.createElement('img');
+    img.src=m.img;
+    img.setAttribute('referrerpolicy','no-referrer');
+    img.setAttribute('crossorigin','anonymous');
+    img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:0;';
+    mp.appendChild(img);
     ph.style.display='none';
   } else {
-    mp.style.backgroundImage='';
     ph.style.display='flex';
   }
 
